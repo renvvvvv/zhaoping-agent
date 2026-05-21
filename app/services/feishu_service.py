@@ -155,8 +155,9 @@ class FeishuClient:
         }
 
         # 写入解析出的字段
-        if job_title:
-            fields["岗位名称"] = job_title
+        # 注意：岗位名称是 DuplexLink 字段，API不能直接写入文本，暂存入彩蛋
+        # if job_title:
+        #     fields["岗位名称"] = job_title
         if resume_source:
             fields["简历来源"] = resume_source
         if education:
