@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>招聘任务管理系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 顶部导航 */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar-nav {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-btn {
+            padding: 8px 16px;
+            border: none;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.25); }
+        .nav-btn.active { background: white; color: #667eea; }
+
+        /* 主内容区 */
+        .main-content {
+            margin-top: 60px;
+            padding: 24px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 统计卡片 */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .stat-info h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .stat-info p {
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* 工具栏 */
+        .toolbar {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .toolbar-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            padding: 8px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 240px;
+            outline: none;
+        }
+        .search-input:focus { border-color: #667eea; }
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            cursor: pointer;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* 看板视图 */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            min-height: 500px;
+        }
+        .kanban-column {
+            background: #f0f2f5;
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 400px;
+        }
+        .kanban-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid;
+        }
+        .kanban-title {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .kanban-count {
+            background: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .kanban-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .task-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .task-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .task-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .task-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .task-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #888;
+        }
+        .task-assignee {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* 列表视图 */
+        .list-view {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .list-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .list-table th {
+            background: #f8f9fa;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        .list-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        .list-table tr:hover { background: #f8f9fa; }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: all 0.3s;
+        }
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+        .modal-header {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 {
+            font-size: 20px;
+        }
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .modal-footer {
+            padding: 0 24px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .btn-danger {
+            background: #ff4d4f;
+            color: white;
+        }
+        .btn-success {
+            background: #52c41a;
+            color: white;
+        }
+
+        /* 状态流转按钮 */
+        .flow-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .flow-btn {
+            padding: 8px 16px;
+            border: 1px solid;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            background: white;
+            transition: all 0.2s;
+        }
+        .flow-btn:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        /* 历史记录 */
+        .history-list {
+            margin-top: 16px;
+        }
+        .history-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .history-time {
+            font-size: 12px;
+            color: #888;
+            min-width: 140px;
+        }
+        .history-content {
+            font-size: 14px;
+        }
+        .history-action {
+            font-weight: 500;
+            color: #667eea;
+        }
+
+        /* 详情面板 */
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        .detail-section h4 {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .detail-value {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .kanban-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 视图切换 */
+        .view-section {
+            display: none;
+        }
+        .view-section.active {
+            display: block;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            z-index: 300;
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success { background: #52c41a; }
+        .toast.error { background: #ff4d4f; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span>📋</span> 招聘任务管理系统
+        </div>
+        <div class="navbar-nav">
+            <button class="nav-btn active" onclick="switchView('kanban')">看板</button>
+            <button class="nav-btn" onclick="switchView('list')">列表</button>
+            <button class="nav-btn" onclick="switchView('stats')">统计</button>
+            <a href="/" class="nav-btn">监控中心</a>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <!-- 统计栏 -->
+        <div class="stats-bar" id="stats-bar">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #e6f7ff;">📊</div>
+                <div class="stat-info">
+                    <h3 id="stat-total">0</h3>
+                    <p>全部任务</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #fff7e6;">⏳</div>
+                <div class="stat-info">
+                    <h3 id="stat-pending">0</h3>
+                    <p>待处理</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #e6f7ff;">🔄</div>
+                <div class="stat-info">
+                    <h3 id="stat-processing">0</h3>
+                    <p>进行中</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #f6ffed;">✅</div>
+                <div class="stat-info">
+                    <h3 id="stat-completed">0</h3>
+                    <p>已完成</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #fff1f0;">⚠️</div>
+                <div class="stat-info">
+                    <h3 id="stat-overdue">0</h3>
+                    <p>已逾期</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <input type="text" class="search-input" id="search-input" placeholder="搜索任务、候选人..." oninput="handleSearch()">
+                <select class="filter-select" id="filter-status" onchange="handleFilter()">
+                    <option value="">全部状态</option>
+                </select>
+                <select class="filter-select" id="filter-priority" onchange="handleFilter()">
+                    <option value="">全部优先级</option>
+                </select>
+                <select class="filter-select" id="filter-type" onchange="handleFilter()">
+                    <option value="">全部类型</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateModal()">➕ 新建任务</button>
+        </div>
+
+        <!-- 看板视图 -->
+        <div class="view-section active" id="view-kanban">
+            <div class="kanban-board" id="kanban-board">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+
+        <!-- 列表视图 -->
+        <div class="view-section" id="view-list">
+            <div class="list-view">
+                <table class="list-table">
+                    <thead>
+                        <tr>
+                            <th>任务标题</th>
+                            <th>状态</th>
+                            <th>优先级</th>
+                            <th>类型</th>
+                            <th>负责人</th>
+                            <th>候选人</th>
+                            <th>截止日期</th>
+                            <th>更新时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list-body">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 统计视图 -->
+        <div class="view-section" id="view-stats">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                <div class="stat-card" style="flex-direction: column; align-items: stretch;">
+                    <h3 style="margin-bottom: 16px;">状态分布</h3>
+                    <div id="status-chart"></div>
+                </div>
+                <div class="stat-card" style="flex-direction: column; align-items: stretch;">
+                    <h3 style="margin-bottom: 16px;">优先级分布</h3>
+                    <div id="priority-chart"></div>
+                </div>
+                <div class="stat-card" style="flex-direction: column; align-items: stretch;">
+                    <h3 style="margin-bottom: 16px;">任务类型分布</h3>
+                    <div id="type-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建/编辑弹窗 -->
+    <div class="modal-overlay" id="task-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">新建任务</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="task-form">
+                    <input type="hidden" id="task-id">
+                    <div class="form-group">
+                        <label>任务标题 *</label>
+                        <input type="text" id="form-title" placeholder="输入任务标题" required>
+                    </div>
+                    <div class="form-group">
+                        <label>任务描述</label>
+                        <textarea id="form-description" placeholder="输入任务详细描述"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>任务类型</label>
+                            <select id="form-type"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>优先级</label>
+                            <select id="form-priority"></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>负责人</label>
+                            <input type="text" id="form-assignee" placeholder="负责人姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>截止日期</label>
+                            <input type="date" id="form-due-date">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>候选人姓名</label>
+                            <input type="text" id="form-candidate" placeholder="关联的候选人">
+                        </div>
+                        <div class="form-group">
+                            <label>候选人邮箱</label>
+                            <input type="email" id="form-candidate-email" placeholder="候选人邮箱">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>关联飞书记录ID</label>
+                        <input type="text" id="form-record-id" placeholder="飞书多维表格记录ID">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveTask()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>任务详情</h2>
+                <button class="modal-close" onclick="closeDetailModal()">×</button>
+            </div>
+            <div class="modal-body" id="detail-body">
+                <!-- 动态生成 -->
+            </div>
+            <div class="modal-footer" id="detail-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>
+                <button class="btn btn-primary" onclick="editCurrentTask()">编辑</button>
+                <button class="btn btn-danger" onclick="deleteCurrentTask()">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+        let tasks = [];
+        let metadata = {};
+        let statusFlow = {};
+        let currentTask = null;
+        let currentView = 'kanban';
+
+        // 状态配置
+        const statusConfig = {
+            pending: { label: '待处理', color: '#fa8c16', bg: '#fff7e6' },
+            processing: { label: '进行中', color: '#1890ff', bg: '#e6f7ff' },
+            waiting_feedback: { label: '等待反馈', color: '#722ed1', bg: '#f9f0ff' },
+            completed: { label: '已完成', color: '#52c41a', bg: '#f6ffed' },
+            cancelled: { label: '已取消', color: '#bfbfbf', bg: '#f5f5f5' }
+        };
+
+        const priorityConfig = {
+            low: { label: '低', color: '#52c41a' },
+            medium: { label: '中', color: '#faad14' },
+            high: { label: '高', color: '#fa541c' },
+            urgent: { label: '紧急', color: '#f5222d' }
+        };
+
+        const typeConfig = {
+            resume_screening: '简历筛选',
+            interview_arrange: '面试安排',
+            offer_process: 'Offer流程',
+            onboarding: '入职办理',
+            communication: '候选人沟通',
+            other: '其他'
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadMetadata();
+            await loadStatusFlow();
+            await refreshTasks();
+            setupFormOptions();
+        });
+
+        // 加载元数据
+        async function loadMetadata() {
+            try {
+                const res = await fetch(`${API_BASE}/api/tasks/metadata`);
+                metadata = await res.json();
+            } catch (e) {
+                console.error('加载元数据失败:', e);
+            }
+        }
+
+        // 加载状态流转规则
+        async function loadStatusFlow() {
+            try {
+                const res = await fetch(`${API_BASE}/api/tasks/status-flow`);
+                statusFlow = await res.json();
+            } catch (e) {
+                console.error('加载状态流转失败:', e);
+            }
+        }
+
+        // 刷新任务列表
+        async function refreshTasks() {
+            try {
+                const status = document.getElementById('filter-status').value;
+                const priority = document.getElementById('filter-priority').value;
+                const type = document.getElementById('filter-type').value;
+                const keyword = document.getElementById('search-input').value;
+
+                let url = `${API_BASE}/api/tasks?`;
+                if (status) url += `status=${status}&`;
+                if (priority) url += `priority=${priority}&`;
+                if (type) url += `task_type=${type}&`;
+                if (keyword) url += `keyword=${encodeURIComponent(keyword)}&`;
+
+                const res = await fetch(url);
+                tasks = await res.json();
+                renderAll();
+                updateStats();
+            } catch (e) {
+                showToast('加载任务失败: ' + e.message, 'error');
+            }
+        }
+
+        // 更新统计
+        async function updateStats() {
+            try {
+                const res = await fetch(`${API_BASE}/api/tasks/statistics`);
+                const stats = await res.json();
+
+                document.getElementById('stat-total').textContent = stats.total;
+                document.getElementById('stat-pending').textContent = stats.status_distribution.pending || 0;
+                document.getElementById('stat-processing').textContent =
+                    (stats.status_distribution.processing || 0) + (stats.status_distribution.waiting_feedback || 0);
+                document.getElementById('stat-completed').textContent = stats.status_distribution.completed || 0;
+                document.getElementById('stat-overdue').textContent = stats.overdue_count;
+
+                renderCharts(stats);
+            } catch (e) {
+                console.error('更新统计失败:', e);
+            }
+        }
+
+        // 渲染所有视图
+        function renderAll() {
+            renderKanban();
+            renderList();
+        }
+
+        // 渲染看板
+        function renderKanban() {
+            const board = document.getElementById('kanban-board');
+            const statuses = ['pending', 'processing', 'waiting_feedback', 'completed', 'cancelled'];
+
+            board.innerHTML = statuses.map(status => {
+                const config = statusConfig[status];
+                const statusTasks = tasks.filter(t => t.status === status);
+
+                return `
+                    <div class="kanban-column">
+                        <div class="kanban-header" style="border-color: ${config.color}">
+                            <div class="kanban-title">
+                                <span style="width: 12px; height: 12px; background: ${config.color}; border-radius: 50%; display: inline-block;"></span>
+                                ${config.label}
+                            </div>
+                            <span class="kanban-count">${statusTasks.length}</span>
+                        </div>
+                        <div class="kanban-cards">
+                            ${statusTasks.map(task => renderTaskCard(task)).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 渲染任务卡片
+        function renderTaskCard(task) {
+            const status = statusConfig[task.status] || statusConfig.pending;
+            const priority = priorityConfig[task.priority] || priorityConfig.medium;
+            const typeLabel = typeConfig[task.task_type] || '其他';
+
+            return `
+                <div class="task-card" style="border-left-color: ${status.color}" onclick="openDetailModal('${task.id}')">
+                    <div class="task-card-title">${escapeHtml(task.title)}</div>
+                    <div class="task-card-meta">
+                        <span class="task-tag" style="background: ${priority.color}20; color: ${priority.color}">${priority.label}</span>
+                        <span class="task-tag" style="background: #f0f0f0; color: #666">${typeLabel}</span>
+                    </div>
+                    <div class="task-card-footer">
+                        <div class="task-assignee">
+                            ${task.assignee ? `<div class="avatar">${task.assignee.charAt(0)}</div><span>${escapeHtml(task.assignee)}</span>` : '<span style="color: #bbb">未分配</span>'}
+                        </div>
+                        <div>${task.due_date ? '⏰ ' + task.due_date : ''}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染列表
+        function renderList() {
+            const tbody = document.getElementById('list-body');
+            tbody.innerHTML = tasks.map(task => {
+                const status = statusConfig[task.status] || statusConfig.pending;
+                const priority = priorityConfig[task.priority] || priorityConfig.medium;
+                const typeLabel = typeConfig[task.task_type] || '其他';
+
+                return `
+                    <tr onclick="openDetailModal('${task.id}')" style="cursor: pointer">
+                        <td><strong>${escapeHtml(task.title)}</strong></td>
+                        <td><span class="status-badge" style="background: ${status.bg}; color: ${status.color}">${status.label}</span></td>
+                        <td><span class="priority-badge" style="background: ${priority.color}20; color: ${priority.color}">${priority.label}</span></td>
+                        <td>${typeLabel}</td>
+                        <td>${task.assignee ? escapeHtml(task.assignee) : '-'}</td>
+                        <td>${task.candidate_name ? escapeHtml(task.candidate_name) : '-'}</td>
+                        <td>${task.due_date || '-'}</td>
+                        <td>${formatDate(task.updated_at)}</td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 4px 12px; font-size: 12px" onclick="event.stopPropagation(); openDetailModal('${task.id}')">详情</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // 渲染图表（简化版）
+        function renderCharts(stats) {
+            // 状态分布
+            const statusChart = document.getElementById('status-chart');
+            if (statusChart && stats.status_distribution) {
+                statusChart.innerHTML = Object.entries(stats.status_distribution)
+                    .filter(([,v]) => v > 0)
+                    .map(([k, v]) => {
+                        const config = statusConfig[k] || { label: k, color: '#999' };
+                        const total = stats.total || 1;
+                        const pct = Math.round((v / total) * 100);
+                        return `
+                            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                <div style="width: 100px; font-size: 14px;">${config.label}</div>
+                                <div style="flex: 1; height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; margin: 0 12px;">
+                                    <div style="width: ${pct}%; height: 100%; background: ${config.color}; border-radius: 12px; transition: width 0.5s;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; font-weight: 600;">${v}</div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+
+            // 优先级分布
+            const priorityChart = document.getElementById('priority-chart');
+            if (priorityChart && stats.priority_distribution) {
+                priorityChart.innerHTML = Object.entries(stats.priority_distribution)
+                    .filter(([,v]) => v > 0)
+                    .map(([k, v]) => {
+                        const config = priorityConfig[k] || { label: k, color: '#999' };
+                        const total = stats.total || 1;
+                        const pct = Math.round((v / total) * 100);
+                        return `
+                            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                <div style="width: 100px; font-size: 14px;">${config.label}</div>
+                                <div style="flex: 1; height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; margin: 0 12px;">
+                                    <div style="width: ${pct}%; height: 100%; background: ${config.color}; border-radius: 12px; transition: width 0.5s;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; font-weight: 600;">${v}</div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+
+            // 类型分布
+            const typeChart = document.getElementById('type-chart');
+            if (typeChart && stats.type_distribution) {
+                typeChart.innerHTML = Object.entries(stats.type_distribution)
+                    .filter(([,v]) => v > 0)
+                    .map(([k, v]) => {
+                        const label = typeConfig[k] || k;
+                        const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'];
+                        const color = colors[Object.keys(stats.type_distribution).indexOf(k) % colors.length];
+                        const total = stats.total || 1;
+                        const pct = Math.round((v / total) * 100);
+                        return `
+                            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                <div style="width: 100px; font-size: 14px;">${label}</div>
+                                <div style="flex: 1; height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; margin: 0 12px;">
+                                    <div style="width: ${pct}%; height: 100%; background: ${color}; border-radius: 12px; transition: width 0.5s;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; font-weight: 600;">${v}</div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+        }
+
+        // 视图切换
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(`view-${view}`).classList.add('active');
+        }
+
+        // 筛选和搜索
+        function handleFilter() {
+            refreshTasks();
+        }
+        function handleSearch() {
+            refreshTasks();
+        }
+
+        // 设置表单选项
+        function setupFormOptions() {
+            const typeSelect = document.getElementById('form-type');
+            const prioritySelect = document.getElementById('form-priority');
+            const statusFilter = document.getElementById('filter-status');
+            const priorityFilter = document.getElementById('filter-priority');
+            const typeFilter = document.getElementById('filter-type');
+
+            if (metadata.types) {
+                typeSelect.innerHTML = metadata.types.map(t => `<option value="${t.value}">${t.label}</option>`).join('');
+                typeFilter.innerHTML = '<option value="">全部类型</option>' + metadata.types.map(t => `<option value="${t.value}">${t.label}</option>`).join('');
+            }
+            if (metadata.priorities) {
+                prioritySelect.innerHTML = metadata.priorities.map(p => `<option value="${p.value}">${p.label}</option>`).join('');
+                priorityFilter.innerHTML = '<option value="">全部优先级</option>' + metadata.priorities.map(p => `<option value="${p.value}">${p.label}</option>`).join('');
+            }
+            if (metadata.statuses) {
+                statusFilter.innerHTML = '<option value="">全部状态</option>' + metadata.statuses.map(s => `<option value="${s.value}">${s.label}</option>`).join('');
+            }
+        }
+
+        // 弹窗操作
+        function openCreateModal() {
+            currentTask = null;
+            document.getElementById('modal-title').textContent = '新建任务';
+            document.getElementById('task-form').reset();
+            document.getElementById('task-id').value = '';
+            document.getElementById('task-modal').classList.add('active');
+        }
+
+        function openEditModal(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            currentTask = task;
+
+            document.getElementById('modal-title').textContent = '编辑任务';
+            document.getElementById('task-id').value = task.id;
+            document.getElementById('form-title').value = task.title;
+            document.getElementById('form-description').value = task.description || '';
+            document.getElementById('form-type').value = task.task_type;
+            document.getElementById('form-priority').value = task.priority;
+            document.getElementById('form-assignee').value = task.assignee || '';
+            document.getElementById('form-due-date').value = task.due_date || '';
+            document.getElementById('form-candidate').value = task.candidate_name || '';
+            document.getElementById('form-candidate-email').value = task.candidate_email || '';
+            document.getElementById('form-record-id').value = task.related_record_id || '';
+
+            document.getElementById('task-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('task-modal').classList.remove('active');
+        }
+
+        function editCurrentTask() {
+            closeDetailModal();
+            if (currentTask) {
+                openEditModal(currentTask.id);
+            }
+        }
+
+        // 保存任务
+        async function saveTask() {
+            const taskId = document.getElementById('task-id').value;
+            const payload = {
+                title: document.getElementById('form-title').value,
+                description: document.getElementById('form-description').value,
+                task_type: document.getElementById('form-type').value,
+                priority: document.getElementById('form-priority').value,
+                assignee: document.getElementById('form-assignee').value,
+                due_date: document.getElementById('form-due-date').value,
+                candidate_name: document.getElementById('form-candidate').value,
+                candidate_email: document.getElementById('form-candidate-email').value,
+                related_record_id: document.getElementById('form-record-id').value
+            };
+
+            if (!payload.title) {
+                showToast('请填写任务标题', 'error');
+                return;
+            }
+
+            try {
+                const url = taskId ? `${API_BASE}/api/tasks/${taskId}` : `${API_BASE}/api/tasks`;
+                const method = taskId ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    showToast(taskId ? '任务已更新' : '任务已创建', 'success');
+                    closeModal();
+                    refreshTasks();
+                } else {
+                    showToast(data.detail || '保存失败', 'error');
+                }
+            } catch (e) {
+                showToast('保存失败: ' + e.message, 'error');
+            }
+        }
+
+        // 详情弹窗
+        async function openDetailModal(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            currentTask = task;
+
+            const status = statusConfig[task.status] || statusConfig.pending;
+            const priority = priorityConfig[task.priority] || priorityConfig.medium;
+            const typeLabel = typeConfig[task.task_type] || '其他';
+
+            // 可流转的状态
+            const allowedTransitions = statusFlow[task.status]?.allowed_transitions || [];
+            const flowButtons = allowedTransitions.map(t => `
+                <button class="flow-btn" style="border-color: ${t.color}; color: ${t.color}" onclick="transitionStatus('${task.id}', '${t.value}')">
+                    → ${t.label}
+                </button>
+            `).join('');
+
+            // 历史记录
+            const historyHtml = task.history?.map(h => `
+                <div class="history-item">
+                    <div class="history-time">${formatDate(h.timestamp)}</div>
+                    <div class="history-content">
+                        <span class="history-action">${h.action}</span>
+                        ${h.from_status ? ` (${statusConfig[h.from_status]?.label || h.from_status} → ${statusConfig[h.to_status]?.label || h.to_status})` : ''}
+                        ${h.comment ? `<br><span style="color: #888; font-size: 13px;">${escapeHtml(h.comment)}</span>` : ''}
+                    </div>
+                </div>
+            `).join('') || '<div style="color: #bbb; padding: 12px 0;">暂无历史记录</div>';
+
+            document.getElementById('detail-body').innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <span class="status-badge" style="background: ${status.bg}; color: ${status.color}; font-size: 14px; padding: 6px 16px;">${status.label}</span>
+                    <span class="priority-badge" style="background: ${priority.color}20; color: ${priority.color}; font-size: 14px; padding: 4px 12px; margin-left: 8px;">${priority.label}</span>
+                </div>
+
+                <h3 style="font-size: 20px; margin-bottom: 16px;">${escapeHtml(task.title)}</h3>
+
+                <div class="detail-section">
+                    <h4>描述</h4>
+                    <div class="detail-value">${task.description ? escapeHtml(task.description) : '<span style="color: #bbb">无描述</span>'}</div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="detail-section">
+                        <h4>任务类型</h4>
+                        <div class="detail-value">${typeLabel}</div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>负责人</h4>
+                        <div class="detail-value">${task.assignee ? escapeHtml(task.assignee) : '<span style="color: #bbb">未分配</span>'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>候选人</h4>
+                        <div class="detail-value">${task.candidate_name ? escapeHtml(task.candidate_name) : '-'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>候选人邮箱</h4>
+                        <div class="detail-value">${task.candidate_email ? escapeHtml(task.candidate_email) : '-'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>截止日期</h4>
+                        <div class="detail-value">${task.due_date || '<span style="color: #bbb">未设置</span>'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>关联记录</h4>
+                        <div class="detail-value">${task.related_record_id || '<span style="color: #bbb">无</span>'}</div>
+                    </div>
+                </div>
+
+                ${flowButtons ? `
+                <div class="flow-buttons">
+                    <span style="font-size: 13px; color: #888; margin-right: 8px;">流转到:</span>
+                    ${flowButtons}
+                </div>
+                ` : '<div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f0; color: #888; font-size: 13px;">该状态为终态，不可流转</div>'}
+
+                <div class="detail-section" style="margin-top: 24px;">
+                    <h4>操作历史</h4>
+                    <div class="history-list">${historyHtml}</div>
+                </div>
+            `;
+
+            document.getElementById('detail-modal').classList.add('active');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.remove('active');
+        }
+
+        // 状态流转
+        async function transitionStatus(taskId, newStatus) {
+            try {
+                const res = await fetch(`${API_BASE}/api/tasks/${taskId}/transition`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_status: newStatus, comment: '' })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    const statusLabel = statusConfig[newStatus]?.label || newStatus;
+                    showToast(`状态已更新为: ${statusLabel}`, 'success');
+                    closeDetailModal();
+                    refreshTasks();
+                } else {
+                    showToast(data.detail || '状态流转失败', 'error');
+                }
+            } catch (e) {
+                showToast('状态流转失败: ' + e.message, 'error');
+            }
+        }
+
+        // 删除任务
+        async function deleteCurrentTask() {
+            if (!currentTask) return;
+            if (!confirm('确定要删除这个任务吗？')) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/tasks/${currentTask.id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('任务已删除', 'success');
+                    closeDetailModal();
+                    refreshTasks();
+                } else {
+                    showToast(data.message || '删除失败', 'error');
+                }
+            } catch (e) {
+                showToast('删除失败: ' + e.message, 'error');
+            }
+        }
+
+        // 工具函数
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            } catch {
+                return dateStr;
+            }
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
