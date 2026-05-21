@@ -114,6 +114,14 @@ class FeishuClient:
                                        email: str,
                                        file_name: str,
                                        file_content: bytes,
+                                       job_title: Optional[str] = None,
+                                       location: Optional[str] = None,
+                                       salary: Optional[str] = None,
+                                       experience: Optional[str] = None,
+                                       resume_source: Optional[str] = None,
+                                       education: Optional[str] = None,
+                                       school: Optional[str] = None,
+                                       phone: Optional[str] = None,
                                        additional_fields: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         上传简历PDF并创建记录
@@ -123,7 +131,15 @@ class FeishuClient:
             email: 邮箱地址
             file_name: PDF文件名
             file_content: PDF文件二进制内容
-            additional_fields: 额外字段
+            job_title: 岗位名称
+            location: 工作地点
+            salary: 薪资范围
+            experience: 工作经验
+            resume_source: 简历来源
+            education: 学历
+            school: 毕业院校
+            phone: 联系方式
+            additional_fields: 额外字段（邮件主题、投递时间等）
 
         Returns:
             创建的记录信息
@@ -138,11 +154,29 @@ class FeishuClient:
             "候选人简历": [{"file_token": file_token}]
         }
 
+        # 写入解析出的字段
+        if job_title:
+            fields["岗位名称"] = job_title
+        if resume_source:
+            fields["简历来源"] = resume_source
+        if education:
+            fields["学历"] = education
+        if school:
+            fields["毕业院校"] = school
+        if phone:
+            fields["联系方式"] = phone
+
         # 将额外字段合并写入"彩蛋"字段（表格中的备注字段）
         if additional_fields:
             extra_parts = []
             for k, v in additional_fields.items():
                 extra_parts.append(f"{k}: {v}")
+            if experience:
+                extra_parts.append(f"工作经验: {experience}")
+            if location:
+                extra_parts.append(f"工作地点: {location}")
+            if salary:
+                extra_parts.append(f"薪资范围: {salary}")
             if extra_parts:
                 fields["彩蛋"] = "\n".join(extra_parts)
 

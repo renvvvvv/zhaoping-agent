@@ -11,6 +11,7 @@ from app.core.config import settings
 from app.services.feishu_service import feishu_client
 from app.services.email_history_service import email_history
 from app.utils.file_handler import generate_resume_filename, save_resume_locally
+from app.utils.email_parser import parse_boss_subject, parse_boss_email_body, get_resume_source, extract_contact_from_pdf_filename
 
 logger = logging.getLogger(__name__)
 
@@ -214,12 +215,37 @@ class MailTMService:
                                         logger.info(f"简历已保存到本地: {local_path}")
                                         pdf_filename = new_filename
 
+                                        # 解析邮件主题和正文，提取候选人信息
+                                        parsed = parse_boss_subject(subject)
+                                        body_info = parse_boss_email_body(body)
+
+                                        # 确定候选人姓名（优先从主题解析，其次从PDF文件名，最后 fallback 到发件人）
+                                        candidate_name = parsed.get("candidate_name") or extract_contact_from_pdf_filename(filename) or sender_name
+
+                                        # 确定候选人邮箱（优先从正文解析，其次用发件邮箱）
+                                        candidate_email = body_info.get("candidate_email") or sender_email
+
+                                        # 简历来源
+                                        resume_source = get_resume_source(sender_email)
+
+                                        logger.info(f"解析结果: 姓名={candidate_name}, 岗位={parsed.get('job_title')}, "
+                                                   f"经验={parsed.get('experience')}, 地点={parsed.get('location')}, "
+                                                   f"薪资={parsed.get('salary')}, 来源={resume_source}")
+
                                         # 上传到飞书
                                         result = await feishu_client.create_record_with_resume(
-                                            candidate_name=sender_name,
-                                            email=sender_email,
+                                            candidate_name=candidate_name,
+                                            email=candidate_email,
                                             file_name=new_filename,
                                             file_content=file_content,
+                                            job_title=parsed.get("job_title"),
+                                            location=parsed.get("location"),
+                                            salary=parsed.get("salary"),
+                                            experience=parsed.get("experience"),
+                                            resume_source=resume_source,
+                                            education=body_info.get("education"),
+                                            school=body_info.get("school"),
+                                            phone=body_info.get("candidate_phone"),
                                             additional_fields={
                                                 "邮件主题": subject,
                                                 "投递时间": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
