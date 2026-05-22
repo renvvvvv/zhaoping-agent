@@ -40,18 +40,12 @@ async def lifespan(app: FastAPI):
     os.makedirs("static", exist_ok=True)
     logger.info(f"上传目录已准备: {settings.RESUME_UPLOAD_PATH}")
 
-    # 启动邮件监控（如果配置了邮箱）
-    if settings.EMAIL_ADDRESS and settings.EMAIL_PASSWORD:
-        logger.info("启动邮件监控服务...")
-        asyncio.create_task(email_service.start_monitoring())
-    else:
-        logger.warning("未配置邮箱信息，邮件监控服务未启动。请在前端配置页面设置。")
+    # 邮件监控服务已禁用（仅保留前端展示功能）
+    logger.info("邮件监控服务已禁用，仅提供前端展示功能")
 
     yield
 
-    # 关闭时停止邮件监控
-    email_service.stop_monitoring()
-    logger.info("应用关闭，邮件监控已停止")
+    logger.info("应用关闭")
 
 
 app = FastAPI(
