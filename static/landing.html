@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>嘉尔秒聘PRO — 智能招聘中枢</title>
+    <title>嘉尔秒聘PRO — VNet数据中心运维团队 · 多Agent智能招聘系统</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -20,24 +20,17 @@
             --accent-coral: #f43f5e;
             --accent-emerald: #10b981;
             --accent-amber: #f59e0b;
+            --accent-violet: #8b5cf6;
             --font-display: 'Playfair Display', 'Noto Serif SC', serif;
             --font-body: 'Noto Sans SC', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: var(--font-body);
-            background: var(--sky-50);
+            background: linear-gradient(180deg, var(--sky-50) 0%, #ffffff 50%, var(--sky-50) 100%);
             color: var(--sky-900);
             overflow-x: hidden;
             line-height: 1.7;
@@ -45,128 +38,87 @@
 
         /* ===== Canvas Background ===== */
         #fluid-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.6;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1; opacity: 0.5;
             pointer-events: none;
         }
 
         /* ===== Navigation ===== */
         .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 0 48px;
-            height: 72px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(240, 249, 255, 0.72);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 48px; height: 72px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px) saturate(1.8);
             -webkit-backdrop-filter: blur(20px) saturate(1.8);
             border-bottom: 1px solid rgba(186, 230, 253, 0.4);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .nav.scrolled {
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 1px 3px rgba(14, 165, 233, 0.08);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.08);
         }
-
         .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
+            display: flex; align-items: center; gap: 14px;
             text-decoration: none;
         }
-
         .nav-logo {
-            width: 40px;
-            height: 40px;
+            width: 42px; height: 42px;
             background: linear-gradient(135deg, var(--sky-400), var(--sky-600));
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.35);
             transition: transform 0.3s ease;
         }
-
         .nav-brand:hover .nav-logo {
             transform: rotate(-8deg) scale(1.1);
         }
-
         .nav-title {
             font-family: var(--font-display);
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--sky-900);
-            letter-spacing: -0.5px;
+            font-size: 22px; font-weight: 700;
+            color: var(--sky-900); letter-spacing: -0.5px;
+            display: flex; flex-direction: column; line-height: 1.2;
         }
-
+        .nav-team {
+            font-size: 10px; font-weight: 500;
+            color: var(--sky-500); letter-spacing: 0.5px;
+            font-family: var(--font-body);
+        }
         .nav-title span {
-            color: var(--sky-500);
-            font-style: italic;
+            background: linear-gradient(135deg, var(--sky-500), var(--sky-700));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
         .nav-links {
-            display: flex;
-            gap: 36px;
-            list-style: none;
+            display: flex; gap: 36px; list-style: none;
         }
-
         .nav-links a {
-            text-decoration: none;
-            color: var(--sky-700);
-            font-size: 14px;
-            font-weight: 500;
-            position: relative;
-            padding: 6px 0;
+            text-decoration: none; color: var(--sky-700);
+            font-size: 14px; font-weight: 500;
+            position: relative; padding: 6px 0;
             transition: color 0.3s;
         }
-
         .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
+            content: ''; position: absolute; bottom: 0; left: 0;
+            width: 0; height: 2px;
             background: linear-gradient(90deg, var(--sky-400), var(--sky-600));
             border-radius: 2px;
             transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        .nav-links a:hover {
-            color: var(--sky-900);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
+        .nav-links a:hover { color: var(--sky-900); }
+        .nav-links a:hover::after { width: 100%; }
         .nav-cta {
             padding: 10px 24px;
             background: linear-gradient(135deg, var(--sky-500), var(--sky-600));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
+            color: white; border: none; border-radius: 10px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
             box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
             transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
+            text-decoration: none; display: inline-block;
         }
-
         .nav-cta:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4);
@@ -175,494 +127,464 @@
         /* ===== Hero Section ===== */
         .hero {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
             text-align: center;
-            padding: 120px 24px 80px;
+            padding: 140px 24px 80px;
             position: relative;
         }
-
         .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            background: rgba(186, 230, 253, 0.4);
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 10px 24px;
+            background: rgba(186, 230, 253, 0.35);
             border: 1px solid rgba(125, 211, 252, 0.5);
             border-radius: 100px;
-            font-size: 13px;
-            color: var(--sky-700);
-            margin-bottom: 32px;
-            backdrop-filter: blur(10px);
+            font-size: 13px; color: var(--sky-700);
+            margin-bottom: 36px; backdrop-filter: blur(10px);
             animation: fadeInUp 0.8s ease 0.2s both;
         }
-
         .hero-badge .pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-emerald);
-            border-radius: 50%;
+            width: 8px; height: 8px;
+            background: var(--accent-emerald); border-radius: 50%;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.2); }
+            50% { opacity: 0.5; transform: scale(1.3); }
         }
-
         .hero h1 {
             font-family: var(--font-display);
-            font-size: clamp(40px, 6vw, 72px);
-            font-weight: 700;
-            line-height: 1.15;
-            color: var(--sky-900);
-            margin-bottom: 24px;
+            font-size: clamp(42px, 6vw, 76px);
+            font-weight: 700; line-height: 1.12;
+            color: var(--sky-900); margin-bottom: 24px;
             animation: fadeInUp 0.8s ease 0.4s both;
         }
-
-        .hero h1 .highlight {
-            background: linear-gradient(135deg, var(--sky-500), var(--sky-700));
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--sky-500), var(--sky-700), var(--accent-violet));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            position: relative;
         }
-
         .hero-subtitle {
-            font-size: clamp(16px, 2vw, 20px);
-            color: var(--sky-600);
-            max-width: 560px;
-            margin-bottom: 48px;
-            font-weight: 300;
+            font-size: clamp(17px, 2vw, 21px);
+            color: var(--sky-600); max-width: 620px;
+            margin-bottom: 48px; font-weight: 300;
             animation: fadeInUp 0.8s ease 0.6s both;
         }
 
+        /* ===== Stats Bar ===== */
         .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            max-width: 800px;
-            width: 100%;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 20px; max-width: 880px; width: 100%;
             animation: fadeInUp 0.8s ease 0.8s both;
         }
-
         .stat-card {
-            background: rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(186, 230, 253, 0.5);
-            border-radius: 20px;
-            padding: 28px 20px;
+            border-radius: 20px; padding: 28px 20px;
             text-align: center;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
         }
-
         .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
             height: 3px;
             background: linear-gradient(90deg, var(--sky-300), var(--sky-500));
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
+            transform: scaleX(0); transition: transform 0.4s ease;
         }
-
         .stat-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.12);
-            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 24px 48px rgba(14, 165, 233, 0.14);
+            background: rgba(255, 255, 255, 0.9);
         }
-
-        .stat-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .stat-icon {
-            font-size: 28px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
+        .stat-card:hover::before { transform: scaleX(1); }
         .stat-number {
             font-family: var(--font-mono);
-            font-size: 32px;
-            font-weight: 500;
-            color: var(--sky-900);
-            line-height: 1;
-            margin-bottom: 6px;
+            font-size: 36px; font-weight: 500;
+            color: var(--sky-900); line-height: 1; margin-bottom: 8px;
         }
-
         .stat-label {
-            font-size: 12px;
-            color: var(--sky-600);
-            font-weight: 500;
-            letter-spacing: 0.5px;
+            font-size: 12px; color: var(--sky-600);
+            font-weight: 500; letter-spacing: 0.5px;
         }
 
-        .scroll-hint {
-            position: absolute;
-            bottom: 32px;
-            left: 50%;
-            transform: translateX(-50%);
+        /* ===== Team Banner ===== */
+        .team-banner {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05), rgba(139, 92, 246, 0.05));
+            border-top: 1px solid rgba(186, 230, 253, 0.4);
+            border-bottom: 1px solid rgba(186, 230, 253, 0.4);
+            padding: 24px 48px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            color: var(--sky-400);
-            font-size: 12px;
-            animation: fadeInUp 0.8s ease 1.2s both;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .team-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(186, 230, 253, 0.5);
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--sky-700);
+            font-weight: 500;
+        }
+        .team-badge .icon {
+            font-size: 16px;
         }
 
-        .scroll-hint svg {
-            animation: bounce 2s infinite;
+        /* ===== Pipeline Section ===== */
+        .pipeline-section {
+            padding: 100px 48px; max-width: 1200px; margin: 0 auto;
         }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(8px); }
-        }
-
-        /* ===== Features Section ===== */
-        .features {
-            padding: 100px 48px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
         .section-header {
-            text-align: center;
-            margin-bottom: 64px;
+            text-align: center; margin-bottom: 64px;
         }
-
         .section-header h2 {
             font-family: var(--font-display);
             font-size: clamp(28px, 4vw, 40px);
-            color: var(--sky-900);
-            margin-bottom: 12px;
+            color: var(--sky-900); margin-bottom: 12px;
         }
-
         .section-header p {
-            color: var(--sky-600);
-            font-size: 16px;
-            max-width: 480px;
-            margin: 0 auto;
+            color: var(--sky-600); font-size: 16px;
+            max-width: 520px; margin: 0 auto;
         }
 
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+        /* Pipeline Flow */
+        .pipeline {
+            display: flex; align-items: flex-start;
+            gap: 8px; overflow-x: auto;
+            padding-bottom: 20px; margin-bottom: 40px;
         }
+        .pipeline-node {
+            flex: 1; min-width: 110px; text-align: center;
+            position: relative;
+        }
+        .pipeline-node-box {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(186, 230, 253, 0.5);
+            border-radius: 16px; padding: 20px 12px;
+            transition: all 0.4s ease;
+            cursor: default;
+        }
+        .pipeline-node:hover .pipeline-node-box {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(14, 165, 233, 0.12);
+            border-color: var(--sky-300);
+        }
+        .pipeline-node-num {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: white;
+            margin: 0 auto 10px;
+            background: linear-gradient(135deg, var(--sky-400), var(--sky-600));
+        }
+        .pipeline-node-num.done {
+            background: linear-gradient(135deg, var(--accent-emerald), #059669);
+        }
+        .pipeline-node-num.doing {
+            background: linear-gradient(135deg, var(--accent-amber), #d97706);
+        }
+        .pipeline-node-title {
+            font-size: 13px; font-weight: 600;
+            color: var(--sky-900); margin-bottom: 4px;
+        }
+        .pipeline-node-desc {
+            font-size: 11px; color: var(--sky-500);
+        }
+        .pipeline-connector {
+            width: 24px; height: 2px;
+            background: linear-gradient(90deg, var(--sky-300), var(--sky-400));
+            margin-top: 36px; flex-shrink: 0;
+            position: relative;
+        }
+        .pipeline-connector::after {
+            content: '›'; position: absolute; right: -4px; top: -9px;
+            color: var(--sky-400); font-size: 14px;
+        }
+        .pipeline-status {
+            display: inline-block;
+            font-size: 10px; padding: 2px 8px;
+            border-radius: 100px; font-weight: 600;
+            margin-top: 8px;
+        }
+        .status-done { background: rgba(16, 185, 129, 0.1); color: var(--accent-emerald); }
+        .status-doing { background: rgba(245, 158, 11, 0.1); color: var(--accent-amber); }
+        .status-todo { background: rgba(148, 163, 184, 0.1); color: #94a3b8; }
 
-        .feature-card {
-            background: rgba(255, 255, 255, 0.7);
+        /* ===== AI Agents Section ===== */
+        .agents-section {
+            padding: 80px 48px;
+            background: linear-gradient(180deg, transparent, rgba(186, 230, 253, 0.15), transparent);
+        }
+        .agents-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 24px; max-width: 1100px; margin: 0 auto;
+        }
+        .agent-card {
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(186, 230, 253, 0.4);
-            border-radius: 24px;
-            padding: 36px 28px;
+            border-radius: 24px; padding: 32px 24px;
+            text-align: center;
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(40px);
+            position: relative; overflow: hidden;
+            opacity: 0; transform: translateY(40px);
         }
-
-        .feature-card.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .agent-card.visible {
+            opacity: 1; transform: translateY(0);
         }
-
-        .feature-card:nth-child(1) { transition-delay: 0s; }
-        .feature-card:nth-child(2) { transition-delay: 0.1s; }
-        .feature-card:nth-child(3) { transition-delay: 0.2s; }
-        .feature-card:nth-child(4) { transition-delay: 0.3s; }
-        .feature-card:nth-child(5) { transition-delay: 0.4s; }
-        .feature-card:nth-child(6) { transition-delay: 0.5s; }
-
-        .feature-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(125, 211, 252, 0.08) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
-        }
-
-        .feature-card:hover::after {
-            opacity: 1;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 24px 48px rgba(14, 165, 233, 0.1);
+        .agent-card:nth-child(1) { transition-delay: 0s; }
+        .agent-card:nth-child(2) { transition-delay: 0.1s; }
+        .agent-card:nth-child(3) { transition-delay: 0.2s; }
+        .agent-card:nth-child(4) { transition-delay: 0.3s; }
+        .agent-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 24px 48px rgba(14, 165, 233, 0.12);
             border-color: rgba(125, 211, 252, 0.7);
         }
+        .agent-icon {
+            width: 64px; height: 64px; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; margin: 0 auto 18px;
+            background: linear-gradient(135deg, var(--sky-200), var(--sky-400));
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.2);
+        }
+        .agent-card h3 {
+            font-size: 16px; font-weight: 700;
+            color: var(--sky-900); margin-bottom: 8px;
+        }
+        .agent-card p {
+            font-size: 13px; color: var(--sky-600); line-height: 1.7;
+        }
+        .agent-tag {
+            display: inline-block; font-size: 11px;
+            padding: 3px 10px; border-radius: 100px;
+            font-weight: 600; margin-top: 12px;
+        }
+        .tag-core { background: rgba(139, 92, 246, 0.1); color: var(--accent-violet); }
+        .tag-parse { background: rgba(16, 185, 129, 0.1); color: var(--accent-emerald); }
+        .tag-audio { background: rgba(245, 158, 11, 0.1); color: var(--accent-amber); }
+        .tag-report { background: rgba(244, 63, 94, 0.1); color: var(--accent-coral); }
 
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            margin-bottom: 20px;
+        /* ===== Tech Stack Section ===== */
+        .tech-section {
+            padding: 80px 48px; max-width: 1000px; margin: 0 auto;
+        }
+        .tech-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .tech-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(186, 230, 253, 0.35);
+            border-radius: 20px; padding: 28px;
+            transition: all 0.4s ease;
+            opacity: 0; transform: translateY(30px);
+        }
+        .tech-card.visible { opacity: 1; transform: translateY(0); }
+        .tech-card:hover {
+            border-color: var(--sky-300);
+            box-shadow: 0 12px 28px rgba(14, 165, 233, 0.08);
+        }
+        .tech-card h4 {
+            font-size: 15px; font-weight: 700;
+            color: var(--sky-900); margin-bottom: 14px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .tech-items {
+            display: flex; flex-wrap: wrap; gap: 8px;
+        }
+        .tech-item {
+            font-size: 12px; padding: 5px 12px;
+            background: rgba(186, 230, 253, 0.3);
+            border-radius: 8px; color: var(--sky-700);
+            font-family: var(--font-mono);
+        }
+
+        /* ===== Progress Section ===== */
+        .progress-section {
+            padding: 80px 48px;
+            background: linear-gradient(180deg, rgba(186, 230, 253, 0.1), transparent);
+        }
+        .progress-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 24px; max-width: 900px; margin: 0 auto;
+        }
+        .progress-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(186, 230, 253, 0.4);
+            border-radius: 20px; padding: 28px;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+        .progress-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(14, 165, 233, 0.1);
+        }
+        .progress-ring {
+            width: 80px; height: 80px; margin: 0 auto 16px;
             position: relative;
         }
-
-        .feature-icon.icon-1 { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
-        .feature-icon.icon-2 { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
-        .feature-icon.icon-3 { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); }
-        .feature-icon.icon-4 { background: linear-gradient(135deg, #fef3c7, #fde68a); }
-        .feature-icon.icon-5 { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
-        .feature-icon.icon-6 { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); }
-
-        .feature-card h3 {
-            font-size: 17px;
-            font-weight: 700;
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        .progress-ring-bg {
+            fill: none; stroke: rgba(186, 230, 253, 0.3);
+            stroke-width: 6;
+        }
+        .progress-ring-fill {
+            fill: none; stroke: var(--sky-500);
+            stroke-width: 6; stroke-linecap: round;
+            transition: stroke-dashoffset 1.5s ease;
+        }
+        .progress-text {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-mono);
+            font-size: 18px; font-weight: 600;
             color: var(--sky-900);
-            margin-bottom: 10px;
+        }
+        .progress-label {
+            font-size: 14px; font-weight: 600;
+            color: var(--sky-900); margin-bottom: 4px;
+        }
+        .progress-detail {
+            font-size: 12px; color: var(--sky-500);
         }
 
-        .feature-card p {
-            font-size: 14px;
-            color: var(--sky-600);
-            line-height: 1.7;
-        }
-
-        /* ===== Live Feed Section ===== */
+        /* ===== Live Feed ===== */
         .live-feed {
-            padding: 80px 48px;
-            background: linear-gradient(180deg, transparent, rgba(186, 230, 253, 0.2), transparent);
+            padding: 80px 48px; max-width: 900px; margin: 0 auto;
         }
-
-        .live-feed-inner {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
         .feed-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 32px;
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 28px;
         }
-
         .feed-header h2 {
             font-family: var(--font-display);
-            font-size: 28px;
-            color: var(--sky-900);
+            font-size: 28px; color: var(--sky-900);
         }
-
         .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: var(--sky-600);
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: var(--sky-600);
             background: rgba(255, 255, 255, 0.6);
-            padding: 6px 14px;
-            border-radius: 100px;
+            padding: 6px 14px; border-radius: 100px;
             border: 1px solid rgba(186, 230, 253, 0.5);
         }
-
         .live-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-coral);
-            border-radius: 50%;
+            width: 8px; height: 8px;
+            background: var(--accent-coral); border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
-
         .feed-list {
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(186, 230, 253, 0.4);
-            border-radius: 20px;
-            overflow: hidden;
+            border: 1px solid rgba(186, 230, 253, 0.35);
+            border-radius: 20px; overflow: hidden;
         }
-
         .feed-item {
-            display: flex;
-            align-items: center;
-            padding: 18px 28px;
-            border-bottom: 1px solid rgba(186, 230, 253, 0.3);
+            display: flex; align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(186, 230, 253, 0.25);
             transition: all 0.3s ease;
-            animation: slideIn 0.5s ease both;
         }
-
-        .feed-item:last-child {
-            border-bottom: none;
-        }
-
-        .feed-item:hover {
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
+        .feed-item:last-child { border-bottom: none; }
+        .feed-item:hover { background: rgba(255, 255, 255, 0.95); }
         .feed-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 40px; height: 40px; border-radius: 12px;
             background: linear-gradient(135deg, var(--sky-200), var(--sky-400));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            margin-right: 16px;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; margin-right: 14px; flex-shrink: 0;
         }
-
-        .feed-content {
-            flex: 1;
-            min-width: 0;
-        }
-
+        .feed-content { flex: 1; min-width: 0; }
         .feed-name {
-            font-weight: 600;
-            color: var(--sky-900);
-            font-size: 14px;
-            margin-bottom: 2px;
+            font-weight: 600; color: var(--sky-900);
+            font-size: 14px; margin-bottom: 2px;
         }
-
         .feed-meta {
-            font-size: 13px;
-            color: var(--sky-500);
+            font-size: 12px; color: var(--sky-500);
         }
-
         .feed-tag {
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-left: 12px;
-            flex-shrink: 0;
+            padding: 3px 10px; border-radius: 100px;
+            font-size: 11px; font-weight: 500;
+            margin-left: 10px; flex-shrink: 0;
         }
-
         .feed-tag.synced {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent-emerald);
+            background: rgba(16, 185, 129, 0.1); color: var(--accent-emerald);
         }
-
-        .feed-tag.pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--accent-amber);
-        }
-
         .feed-time {
-            font-size: 12px;
-            color: var(--sky-400);
-            margin-left: 16px;
-            flex-shrink: 0;
+            font-size: 12px; color: var(--sky-400);
+            margin-left: 12px; flex-shrink: 0;
             font-family: var(--font-mono);
         }
 
         /* ===== CTA Section ===== */
         .cta {
-            padding: 100px 48px;
-            text-align: center;
+            padding: 100px 48px; text-align: center;
         }
-
         .cta-card {
-            max-width: 640px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05), rgba(2, 132, 199, 0.08));
+            max-width: 640px; margin: 0 auto;
+            background: linear-gradient(135deg,
+                rgba(14, 165, 233, 0.06),
+                rgba(139, 92, 246, 0.06));
             border: 1px solid rgba(125, 211, 252, 0.4);
-            border-radius: 32px;
-            padding: 64px 48px;
-            position: relative;
-            overflow: hidden;
+            border-radius: 32px; padding: 56px 40px;
+            position: relative; overflow: hidden;
         }
-
         .cta-card::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(125, 211, 252, 0.2) 0%, transparent 70%);
+            content: ''; position: absolute;
+            top: -100px; right: -100px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle,
+                rgba(125, 211, 252, 0.15) 0%, transparent 70%);
             pointer-events: none;
         }
-
         .cta h2 {
             font-family: var(--font-display);
-            font-size: 36px;
-            color: var(--sky-900);
-            margin-bottom: 16px;
+            font-size: 34px; color: var(--sky-900);
+            margin-bottom: 12px;
         }
-
         .cta p {
-            color: var(--sky-600);
-            font-size: 16px;
-            margin-bottom: 36px;
+            color: var(--sky-600); font-size: 16px;
+            margin-bottom: 32px;
         }
-
         .cta-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
+            display: flex; gap: 14px;
+            justify-content: center; flex-wrap: wrap;
         }
-
         .btn-primary {
-            padding: 14px 36px;
+            padding: 14px 32px;
             background: linear-gradient(135deg, var(--sky-500), var(--sky-600));
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
+            color: white; border: none; border-radius: 14px;
+            font-size: 15px; font-weight: 600; cursor: pointer;
             box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35);
             transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            text-decoration: none; display: inline-flex;
+            align-items: center; gap: 8px;
         }
-
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 32px rgba(14, 165, 233, 0.45);
         }
-
         .btn-secondary {
-            padding: 14px 36px;
+            padding: 14px 32px;
             background: rgba(255, 255, 255, 0.7);
-            color: var(--sky-700);
-            border: 1px solid rgba(186, 230, 253, 0.6);
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            color: var(--sky-700); border: 1px solid rgba(186, 230, 253, 0.6);
+            border-radius: 14px; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease;
+            text-decoration: none; display: inline-flex;
+            align-items: center; gap: 8px;
             backdrop-filter: blur(10px);
         }
-
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.95);
             border-color: var(--sky-300);
@@ -671,61 +593,33 @@
 
         /* ===== Footer ===== */
         .footer {
-            padding: 40px 48px;
-            text-align: center;
+            padding: 40px 48px; text-align: center;
             border-top: 1px solid rgba(186, 230, 253, 0.3);
-            color: var(--sky-400);
-            font-size: 13px;
+            color: var(--sky-400); font-size: 13px;
         }
-
-        .footer a {
-            color: var(--sky-500);
-            text-decoration: none;
-        }
+        .footer a { color: var(--sky-500); text-decoration: none; }
 
         /* ===== Animations ===== */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== Responsive ===== */
         @media (max-width: 768px) {
-            .nav {
-                padding: 0 20px;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .features, .live-feed, .cta {
-                padding: 60px 24px;
-            }
-
-            .feed-item {
-                flex-wrap: wrap;
-            }
-
-            .feed-time {
-                margin-left: 0;
-                margin-top: 8px;
-                width: 100%;
-            }
+            .nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .nav-title .nav-team { display: none; }
+            .hero-stats { grid-template-columns: repeat(2, 1fr); }
+            .agents-grid { grid-template-columns: 1fr; }
+            .tech-grid { grid-template-columns: 1fr; }
+            .progress-grid { grid-template-columns: 1fr; }
+            .pipeline { flex-wrap: wrap; justify-content: center; }
+            .pipeline-connector { display: none; }
+            .pipeline-node { min-width: 140px; flex: 0 0 calc(33% - 10px); }
+            .features, .live-feed, .cta { padding: 60px 24px; }
+            .team-banner { padding: 20px 24px; gap: 12px; }
+            .team-badge { font-size: 12px; padding: 6px 14px; }
         }
     </style>
 </head>
@@ -735,128 +629,312 @@
     <!-- Navigation -->
     <nav class="nav" id="navbar">
         <a href="/" class="nav-brand">
-            <div class="nav-logo">⚡</div>
-            <div class="nav-title">嘉尔秒聘<span>PRO</span></div>
+            <div class="nav-logo">🧠</div>
+            <div class="nav-title">
+                嘉尔秒聘<span>PRO</span>
+                <span class="nav-team">VNet数据中心 · 运维团队出品</span>
+            </div>
         </a>
         <ul class="nav-links">
-            <li><a href="/">首页</a></li>
-            <li><a href="/static/monitor.html">监控中心</a></li>
-            <li><a href="/static/tasks.html">任务管理</a></li>
-            <li><a href="#">配置</a></li>
+            <li><a href="#pipeline">招聘流程</a></li>
+            <li><a href="#agents">AI Agents</a></li>
+            <li><a href="#tech">技术架构</a></li>
+            <li><a href="#progress">项目进度</a></li>
         </ul>
-        <a href="/static/monitor.html" class="nav-cta">进入监控中心 →</a>
+        <a href="/static/monitor.html" class="nav-cta">监控中心 →</a>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero">
         <div class="hero-badge">
             <span class="pulse"></span>
-            系统运行正常 · 邮件监控中
+            VNet数据中心运维团队 · 自研招聘智能体系统
         </div>
         <h1>
-            智能招聘<br>
-            <span class="highlight">从此事半功倍</span>
+            让招聘像流水一样<br>
+            <span class="gradient-text">智能 · 高效 · 可追溯</span>
         </h1>
         <p class="hero-subtitle">
-            自动接收邮件简历，智能解析候选人信息，实时同步飞书多维表格。让招聘流程像流水一样顺畅。
+            嘉尔秒聘PRO 由 VNet数据中心运维团队自主研发，覆盖从简历获取、AI解析、胜任力评估、评审、面试、Offer到入职的全流程，专为数据中心人才招聘场景打造。
         </p>
         <div class="hero-stats">
             <div class="stat-card">
-                <span class="stat-icon">📧</span>
-                <div class="stat-number" data-target="12">0</div>
-                <div class="stat-label">今日收到简历</div>
+                <div class="stat-number" data-target="9">0</div>
+                <div class="stat-label">流程节点</div>
             </div>
             <div class="stat-card">
-                <span class="stat-icon">✅</span>
-                <div class="stat-number" data-target="11">0</div>
-                <div class="stat-label">已同步飞书</div>
+                <div class="stat-number" data-target="4">0</div>
+                <div class="stat-label">AI Agents</div>
             </div>
             <div class="stat-card">
-                <span class="stat-icon">⏳</span>
-                <div class="stat-number" data-target="1">0</div>
-                <div class="stat-label">待处理</div>
+                <div class="stat-number" data-target="3">0</div>
+                <div class="stat-label">LLM模型容灾</div>
             </div>
             <div class="stat-card">
-                <span class="stat-icon">📈</span>
-                <div class="stat-number" data-target="92">0</div>
-                <div class="stat-label">成功率 %</div>
+                <div class="stat-number" data-target="95">0</div>
+                <div class="stat-label">% 解析准确率</div>
             </div>
-        </div>
-        <div class="scroll-hint">
-            <span>向下滚动探索</span>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M19 12l-7 7-7-7"/>
-            </svg>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
+    <!-- Team Banner -->
+    <div class="team-banner">
+        <div class="team-badge">
+            <span class="icon">🏢</span>
+            VNet数据中心运维团队自研
+        </div>
+        <div class="team-badge">
+            <span class="icon">⚡</span>
+            服务基础设施招聘场景
+        </div>
+        <div class="team-badge">
+            <span class="icon">🛡️</span>
+            企业级安全与稳定性
+        </div>
+        <div class="team-badge">
+            <span class="icon">🔧</span>
+            持续迭代优化中
+        </div>
+    </div>
+
+    <!-- Pipeline Section -->
+    <section class="pipeline-section" id="pipeline">
         <div class="section-header">
-            <h2>六大核心能力</h2>
-            <p>从简历接收到人才入库，全流程自动化处理</p>
+            <h2>九大招聘流程节点</h2>
+            <p>从简历获取到人才入职，全流程自动化流转</p>
         </div>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <div class="feature-icon icon-1">📬</div>
-                <h3>智能邮箱监控</h3>
-                <p>7×24 小时监听虚拟邮箱，实时捕获来自 BOSS直聘等平台的简历邮件，不错过任何一份人才。</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon icon-2">📄</div>
-                <h3>简历自动解析</h3>
-                <p>从邮件主题提取候选人姓名、岗位、薪资、地点等关键信息，自动填充到对应字段。</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon icon-3">🔄</div>
-                <h3>飞书多维表格同步</h3>
-                <p>简历 PDF 自动上传至飞书 Drive，并在多维表格创建完整记录，招聘团队实时协作。</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon icon-4">🔐</div>
-                <h3>验证码智能识别</h3>
-                <p>自动识别并记录验证码邮件，在监控面板高亮展示，省去人工查阅邮箱的繁琐。</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon icon-5">🤖</div>
-                <h3>AI 简历评估</h3>
-                <p>（即将上线）基于大模型分析简历与岗位的匹配度，生成评估结论与面试建议。</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon icon-6">📊</div>
-                <h3>招聘流程管理</h3>
-                <p>跟踪候选人从简历投递到 Offer 发放的全流程状态，淘汰原因标签化管理。</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Live Feed Section -->
-    <section class="live-feed">
-        <div class="live-feed-inner">
-            <div class="feed-header">
-                <h2>实时动态</h2>
-                <div class="live-indicator">
-                    <span class="live-dot"></span>
-                    LIVE
+        <div class="pipeline">
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num done">1</div>
+                    <div class="pipeline-node-title">简历获取</div>
+                    <div class="pipeline-node-desc">虚拟邮箱/API/RPA</div>
+                    <span class="pipeline-status status-done">已完成</span>
                 </div>
             </div>
-            <div class="feed-list" id="feed-list">
-                <!-- Feed items will be populated by JS -->
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num done">2</div>
+                    <div class="pipeline-node-title">AI解析</div>
+                    <div class="pipeline-node-desc">结构化信息提取</div>
+                    <span class="pipeline-status status-done">已完成</span>
+                </div>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num done">3</div>
+                    <div class="pipeline-node-title">胜任力评估</div>
+                    <div class="pipeline-node-desc">算力≥500周门槛</div>
+                    <span class="pipeline-status status-done">已完成</span>
+                </div>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num doing">4</div>
+                    <div class="pipeline-node-title">评估人评审</div>
+                    <div class="pipeline-node-desc">飞书审批流</div>
+                    <span class="pipeline-status status-doing">开发中</span>
+                </div>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num doing">5</div>
+                    <div class="pipeline-node-title">发起面试</div>
+                    <div class="pipeline-node-desc">自动排期</div>
+                    <span class="pipeline-status status-doing">开发中</span>
+                </div>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num doing">6</div>
+                    <div class="pipeline-node-title">面试评价</div>
+                    <div class="pipeline-node-desc">语音纪要+AI评语</div>
+                    <span class="pipeline-status status-doing">开发中</span>
+                </div>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num">7</div>
+                    <div class="pipeline-node-title">发Offer</div>
+                    <div class="pipeline-node-desc">审批流+电子签</div>
+                    <span class="pipeline-status status-todo">待开始</span>
+                </div>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num">8</div>
+                    <div class="pipeline-node-title">待入职</div>
+                    <div class="pipeline-node-desc">材料+ERP对接</div>
+                    <span class="pipeline-status status-todo">待开始</span>
+                </div>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+                <div class="pipeline-node-box">
+                    <div class="pipeline-node-num">9</div>
+                    <div class="pipeline-node-title">已入职</div>
+                    <div class="pipeline-node-desc">归档+试用期</div>
+                    <span class="pipeline-status status-todo">待开始</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
+    <!-- AI Agents Section -->
+    <section class="agents-section" id="agents">
+        <div class="section-header">
+            <h2>四大 AI Agent 智能体</h2>
+            <p>每个Agent专注一个领域，协同完成招聘全流程</p>
+        </div>
+        <div class="agents-grid">
+            <div class="agent-card">
+                <div class="agent-icon">🔍</div>
+                <h3>招聘分析 Agent</h3>
+                <p>负责JD深度分析、人才市场洞察、招聘策略建议，为HR提供数据驱动的决策支持。</p>
+                <span class="agent-tag tag-core">策略层</span>
+            </div>
+            <div class="agent-card">
+                <div class="agent-icon">📄</div>
+                <h3>简历筛选 Agent</h3>
+                <p>自动解析PDF/DOC/图片简历，提取结构化信息，进行胜任力评分与去重检测。</p>
+                <span class="agent-tag tag-parse">核心层</span>
+            </div>
+            <div class="agent-card">
+                <div class="agent-icon">🎙️</div>
+                <h3>AI面试 Agent</h3>
+                <p>语音转文字、说话人分离、关键问答提取、AI辅助生成面试评语与考察建议。</p>
+                <span class="agent-tag tag-audio">辅助层</span>
+            </div>
+            <div class="agent-card">
+                <div class="agent-icon">📊</div>
+                <h3>周报生成 Agent</h3>
+                <p>自动汇总招聘漏斗数据、转化率分析、趋势预测，一键生成招聘周报与月报。</p>
+                <span class="agent-tag tag-report">分析层</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="tech-section" id="tech">
+        <div class="section-header">
+            <h2>技术架构亮点</h2>
+            <p>多模型容灾 · 向量检索 · 飞书生态深度集成</p>
+        </div>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h4>🧠 AI 层</h4>
+                <div class="tech-items">
+                    <span class="tech-item">Claude 3.5 Sonnet</span>
+                    <span class="tech-item">GPT-4</span>
+                    <span class="tech-item">文心一言</span>
+                    <span class="tech-item">Function Calling</span>
+                    <span class="tech-item">向量Embedding</span>
+                    <span class="tech-item">Milvus</span>
+                </div>
+            </div>
+            <div class="tech-card">
+                <h4>⚙️ 后端层</h4>
+                <div class="tech-items">
+                    <span class="tech-item">FastAPI</span>
+                    <span class="tech-item">Celery</span>
+                    <span class="tech-item">Redis</span>
+                    <span class="tech-item">RabbitMQ</span>
+                    <span class="tech-item">MySQL</span>
+                    <span class="tech-item">Flytable</span>
+                </div>
+            </div>
+            <div class="tech-card">
+                <h4>🔌 集成层</h4>
+                <div class="tech-items">
+                    <span class="tech-item">飞书多维表格</span>
+                    <span class="tech-item">飞书日历API</span>
+                    <span class="tech-item">飞书审批</span>
+                    <span class="tech-item">钉钉API</span>
+                    <span class="tech-item">ERP对接</span>
+                    <span class="tech-item">虚拟邮箱</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section class="progress-section" id="progress">
+        <div class="section-header">
+            <h2>项目开发进度</h2>
+            <p>稳步推进，已完成核心基础能力搭建</p>
+        </div>
+        <div class="progress-grid">
+            <div class="progress-card">
+                <div class="progress-ring">
+                    <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle class="progress-ring-bg" cx="40" cy="40" r="34"/>
+                        <circle class="progress-ring-fill" cx="40" cy="40" r="34"
+                            stroke-dasharray="213.6" stroke-dashoffset="53.4"/>
+                    </svg>
+                    <div class="progress-text">75%</div>
+                </div>
+                <div class="progress-label">基础架构</div>
+                <div class="progress-detail">候选人CRUD + 简历解析</div>
+            </div>
+            <div class="progress-card">
+                <div class="progress-ring">
+                    <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle class="progress-ring-bg" cx="40" cy="40" r="34"/>
+                        <circle class="progress-ring-fill" cx="40" cy="40" r="34"
+                            stroke-dasharray="213.6" stroke-dashoffset="149.5"/>
+                    </svg>
+                    <div class="progress-text">30%</div>
+                </div>
+                <div class="progress-label">AI能力</div>
+                <div class="progress-detail">解析 + 评估 开发中</div>
+            </div>
+            <div class="progress-card">
+                <div class="progress-ring">
+                    <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle class="progress-ring-bg" cx="40" cy="40" r="34"/>
+                        <circle class="progress-ring-fill" cx="40" cy="40" r="34"
+                            stroke-dasharray="213.6" stroke-dashoffset="192.2"/>
+                    </svg>
+                    <div class="progress-text">10%</div>
+                </div>
+                <div class="progress-label">流程闭环</div>
+                <div class="progress-detail">面试/Offer/入职 待开始</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Feed -->
+    <section class="live-feed">
+        <div class="feed-header">
+            <h2>实时动态</h2>
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                系统运行中
+            </div>
+        </div>
+        <div class="feed-list" id="feed-list">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- CTA -->
     <section class="cta">
         <div class="cta-card">
-            <h2>准备好提升招聘效率了吗？</h2>
-            <p>进入监控中心，实时查看简历接收、飞书同步、系统状态等完整信息。</p>
+            <h2>探索秒聘PRO</h2>
+            <p>进入监控中心查看邮件接收、简历同步、系统状态等实时信息</p>
             <div class="cta-buttons">
                 <a href="/static/monitor.html" class="btn-primary">
                     🚀 进入监控中心
                 </a>
                 <a href="https://vnet.feishu.cn/base/WJhJb2MY4aacKSsi4SUcRvc5nlh?table=tblvcGRPgxFP0Rxe" target="_blank" class="btn-secondary">
-                    📋 打开飞书表格
+                    📋 飞书表格
                 </a>
             </div>
         </div>
@@ -864,7 +942,8 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <p>嘉尔秒聘 PRO · 智能招聘AI中枢 · <a href="https://github.com/renvvvvv/zhaoping-agent" target="_blank">GitHub</a></p>
+        <p>嘉尔秒聘 PRO · VNet数据中心运维团队 自主研发 · 多Agent智能招聘系统 v1.0 ·
+        <a href="https://github.com/renvvvvv/zhaoping-agent" target="_blank">GitHub</a></p>
     </footer>
 
     <script>
@@ -873,7 +952,7 @@
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
-        const PARTICLE_COUNT = 60;
+        const PARTICLE_COUNT = 50;
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -881,40 +960,30 @@
         }
 
         class Particle {
-            constructor() {
-                this.reset();
-            }
-
+            constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.size = Math.random() * 120 + 60;
-                this.speedX = (Math.random() - 0.5) * 0.3;
-                this.speedY = (Math.random() - 0.5) * 0.3;
-                this.opacity = Math.random() * 0.15 + 0.05;
-                this.hue = Math.random() * 40 + 190; // blue range
+                this.size = Math.random() * 140 + 80;
+                this.speedX = (Math.random() - 0.5) * 0.25;
+                this.speedY = (Math.random() - 0.5) * 0.25;
+                this.opacity = Math.random() * 0.12 + 0.04;
+                this.hue = Math.random() * 30 + 195;
             }
-
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-
                 if (this.x < -this.size) this.x = width + this.size;
                 if (this.x > width + this.size) this.x = -this.size;
                 if (this.y < -this.size) this.y = height + this.size;
                 if (this.y > height + this.size) this.y = -this.size;
             }
-
             draw() {
-                const gradient = ctx.createRadialGradient(
-                    this.x, this.y, 0,
-                    this.x, this.y, this.size
-                );
-                gradient.addColorStop(0, `hsla(${this.hue}, 80%, 70%, ${this.opacity})`);
-                gradient.addColorStop(0.5, `hsla(${this.hue}, 70%, 60%, ${this.opacity * 0.5})`);
-                gradient.addColorStop(1, `hsla(${this.hue}, 60%, 50%, 0)`);
-
-                ctx.fillStyle = gradient;
+                const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+                g.addColorStop(0, `hsla(${this.hue}, 85%, 72%, ${this.opacity})`);
+                g.addColorStop(0.5, `hsla(${this.hue}, 75%, 62%, ${this.opacity * 0.4})`);
+                g.addColorStop(1, `hsla(${this.hue}, 65%, 52%, 0)`);
+                ctx.fillStyle = g;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -923,66 +992,49 @@
 
         function initParticles() {
             particles = [];
-            for (let i = 0; i < PARTICLE_COUNT; i++) {
-                particles.push(new Particle());
-            }
+            for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
         }
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
 
         resize();
         initParticles();
         animate();
-        window.addEventListener('resize', () => {
-            resize();
-            initParticles();
-        });
+        window.addEventListener('resize', () => { resize(); initParticles(); });
 
-        // ===== Number Counter Animation =====
+        // ===== Number Counter =====
         function animateNumbers() {
-            const counters = document.querySelectorAll('.stat-number');
-            counters.forEach(counter => {
+            document.querySelectorAll('.stat-number').forEach(counter => {
                 const target = parseInt(counter.dataset.target);
                 const duration = 2000;
                 const step = target / (duration / 16);
                 let current = 0;
-
                 const update = () => {
                     current += step;
                     if (current < target) {
                         counter.textContent = Math.floor(current);
                         requestAnimationFrame(update);
                     } else {
-                        counter.textContent = target;
+                        counter.textContent = target + (counter.dataset.target === '95' ? '' : '');
                     }
                 };
-
-                // Use IntersectionObserver to trigger when visible
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            update();
-                            observer.unobserve(entry.target);
-                        }
+                        if (entry.isIntersecting) { update(); observer.unobserve(entry.target); }
                     });
                 }, { threshold: 0.5 });
-
                 observer.observe(counter);
             });
         }
-
         animateNumbers();
 
-        // ===== Scroll-triggered Feature Cards =====
-        function observeFeatures() {
-            const cards = document.querySelectorAll('.feature-card');
+        // ===== Scroll-triggered Cards =====
+        function observeCards(selector) {
+            const cards = document.querySelectorAll(selector);
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -990,59 +1042,46 @@
                         observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
             cards.forEach(card => observer.observe(card));
         }
+        observeCards('.agent-card');
+        observeCards('.tech-card');
 
-        observeFeatures();
-
-        // ===== Navbar Scroll Effect =====
+        // ===== Navbar Scroll =====
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
         });
 
         // ===== Live Feed Data =====
         const feedData = [
-            { name: '叶智文', position: '电气测试工程师-数据中心设施运维', location: '乌兰察布', salary: '13-17K', status: 'synced', time: '06-21 16:01' },
-            { name: '任承智', position: '暖通工程师', location: '南通', salary: '10-15K', status: 'synced', time: '06-21 15:59' },
-            { name: '欧阳', position: '值班长', location: '苏州', salary: '8-10K', status: 'synced', time: '06-21 15:59' },
-            { name: '苏威力', position: '暖通工程师', location: '苏州', salary: '10-15K', status: 'synced', time: '06-21 15:59' },
-            { name: '陈佳乐', position: '弱电工程师', location: '苏州', salary: '10-15K', status: 'synced', time: '06-21 16:00' },
+            { name: '叶智文', position: '电气测试工程师', location: '乌兰察布', status: 'synced', time: '06-21' },
+            { name: '任承智', position: '暖通工程师', location: '南通', status: 'synced', time: '06-21' },
+            { name: '欧阳', position: '值班长', location: '苏州', status: 'synced', time: '06-21' },
+            { name: '苏威力', position: '暖通工程师', location: '苏州', status: 'synced', time: '06-21' },
+            { name: '陈佳乐', position: '弱电工程师', location: '苏州', status: 'synced', time: '06-21' },
         ];
 
-        function renderFeed() {
-            const list = document.getElementById('feed-list');
-            list.innerHTML = feedData.map((item, index) => `
-                <div class="feed-item" style="animation-delay: ${index * 0.1}s">
-                    <div class="feed-avatar">${item.name.charAt(0)}</div>
-                    <div class="feed-content">
-                        <div class="feed-name">${item.name} · ${item.position}</div>
-                        <div class="feed-meta">${item.location} · ${item.salary}</div>
-                    </div>
-                    <span class="feed-tag ${item.status}">
-                        ${item.status === 'synced' ? '✓ 已同步' : '⏳ 处理中'}
-                    </span>
-                    <div class="feed-time">${item.time}</div>
+        document.getElementById('feed-list').innerHTML = feedData.map(item => `
+            <div class="feed-item">
+                <div class="feed-avatar">${item.name.charAt(0)}</div>
+                <div class="feed-content">
+                    <div class="feed-name">${item.name} · ${item.position}</div>
+                    <div class="feed-meta">${item.location}</div>
                 </div>
-            `).join('');
-        }
+                <span class="feed-tag synced">已同步飞书</span>
+                <div class="feed-time">${item.time}</div>
+            </div>
+        `).join('');
 
-        renderFeed();
-
-        // Smooth scroll for nav links
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
     </script>
