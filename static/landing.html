@@ -1005,6 +1005,134 @@
             font-family: var(--font-mono);
         }
 
+        /* ===== ANALYSIS AGENT ENHANCED ===== */
+        .analysis-hero {
+            position: relative; height: 400px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 32px; overflow: hidden;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.03), rgba(255, 0, 110, 0.03));
+            border: 1px solid rgba(0, 240, 255, 0.1);
+        }
+        #globe-canvas {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+        }
+        .analysis-hero-overlay {
+            position: relative; z-index: 1;
+            text-align: center;
+        }
+        .analysis-hero h2 {
+            font-family: var(--font-display);
+            font-size: 32px; color: var(--text-primary);
+            letter-spacing: 3px; margin-bottom: 12px;
+        }
+        .analysis-hero p {
+            color: var(--text-secondary); font-size: 14px;
+            max-width: 400px; margin: 0 auto;
+        }
+        .data-ticker {
+            display: flex; gap: 40px;
+            padding: 16px 0;
+            overflow: hidden;
+            border-top: 1px solid rgba(0, 240, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+            margin-bottom: 32px;
+            background: rgba(0, 240, 255, 0.02);
+        }
+        .ticker-item {
+            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px; color: var(--cyan);
+            white-space: nowrap;
+            animation: tickerScroll 20s linear infinite;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-dot {
+            width: 6px; height: 6px;
+            background: var(--cyan); border-radius: 50%;
+            box-shadow: 0 0 8px var(--cyan);
+            animation: pulse 1s infinite;
+        }
+        .slot-machine {
+            display: inline-block;
+            overflow: hidden;
+            height: 40px; line-height: 40px;
+            vertical-align: bottom;
+        }
+        .slot-machine-inner {
+            display: flex; flex-direction: column;
+            animation: slotRoll 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes slotRoll {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(0); }
+        }
+        .radar-pulse {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px; height: 100px;
+            border: 2px solid rgba(0, 240, 255, 0.3);
+            border-radius: 50%;
+            animation: radarExpand 3s ease-out infinite;
+            pointer-events: none;
+        }
+        @keyframes radarExpand {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 300px; height: 300px; opacity: 0; }
+        }
+        .line-chart-container {
+            height: 150px; position: relative;
+            margin-top: 16px;
+        }
+        #line-canvas {
+            width: 100%; height: 100%;
+        }
+        .thinking-bubble {
+            position: fixed; bottom: 40px; right: 40px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 16px; padding: 20px 24px;
+            max-width: 320px;
+            backdrop-filter: blur(20px);
+            font-size: 13px; color: var(--text-secondary);
+            line-height: 1.6;
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.5s ease;
+            z-index: 50;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+        }
+        .thinking-bubble.active {
+            opacity: 1; transform: translateY(0);
+        }
+        .thinking-bubble::before {
+            content: '🧠 AI 思考中...';
+            display: block; font-family: var(--font-display);
+            font-size: 11px; color: var(--cyan);
+            margin-bottom: 8px; letter-spacing: 1px;
+        }
+        .typing-cursor::after {
+            content: '|';
+            animation: cursorBlink 1s infinite;
+            color: var(--cyan);
+        }
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .dashboard-enter {
+            opacity: 0;
+            transform: perspective(1000px) rotateX(15deg) translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dashboard-enter.visible {
+            opacity: 1;
+            transform: perspective(1000px) rotateX(0) translateY(0);
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             body { cursor: auto; }
@@ -1355,25 +1483,45 @@
             <div style="width:80px"></div>
         </div>
         <div class="agent-detail-body">
+            <!-- Data Ticker -->
+            <div class="data-ticker" id="data-ticker">
+                <div class="ticker-item"><span class="ticker-dot"></span>AI正在分析苏州地区暖通工程师市场...</div>
+                <div class="ticker-item"><span class="ticker-dot"></span>检测到18份新简历进入漏斗...</div>
+                <div class="ticker-item"><span class="ticker-dot"></span>BOSS直聘渠道转化率提升5.2%...</div>
+                <div class="ticker-item"><span class="ticker-dot"></span>AI建议加大乌兰察布地区招聘投入...</div>
+                <div class="ticker-item"><span class="ticker-dot"></span>正在生成本周人才市场洞察报告...</div>
+                <div class="ticker-item"><span class="ticker-dot"></span>发现3位高匹配度候选人...</div>
+            </div>
+
+            <!-- 3D Globe Hero -->
+            <div class="analysis-hero dashboard-enter" data-delay="0">
+                <canvas id="globe-canvas"></canvas>
+                <div class="analysis-hero-overlay">
+                    <h2>全球人才洞察</h2>
+                    <p>实时监控全国数据中心人才分布与流动趋势</p>
+                </div>
+            </div>
+
             <div class="dashboard-grid">
-                <div class="dashboard-card funnel-container">
+                <div class="dashboard-card funnel-container dashboard-enter" data-delay="100">
                     <canvas id="funnel-canvas"></canvas>
                 </div>
-                <div class="dashboard-card">
+                <div class="dashboard-card dashboard-enter" data-delay="200">
                     <h3>市场薪资趋势</h3>
-                    <div class="dashboard-metric">18.5<span>K/月</span></div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-item" style="height:40%" data-label="暖通"></div>
-                        <div class="chart-bar-item" style="height:65%" data-label="电气"></div>
-                        <div class="chart-bar-item" style="height:55%" data-label="弱电"></div>
-                        <div class="chart-bar-item" style="height:80%" data-label="值班长"></div>
-                        <div class="chart-bar-item" style="height:70%" data-label="工程师"></div>
-                        <div class="chart-bar-item" style="height:90%" data-label="主管"></div>
+                    <div class="dashboard-metric">
+                        <span class="slot-machine" id="salary-slot"><span class="slot-machine-inner">18.5</span></span>
+                        <span>K/月</span>
+                    </div>
+                    <div class="line-chart-container">
+                        <canvas id="salary-line-canvas"></canvas>
                     </div>
                 </div>
-                <div class="dashboard-card">
+                <div class="dashboard-card dashboard-enter" data-delay="300">
                     <h3>渠道转化率</h3>
-                    <div class="dashboard-metric">62.3<span>%</span></div>
+                    <div class="dashboard-metric">
+                        <span class="slot-machine" id="conversion-slot"><span class="slot-machine-inner">62.3</span></span>
+                        <span>%</span>
+                    </div>
                     <div class="chart-bar">
                         <div class="chart-bar-item" style="height:30%" data-label="BOSS"></div>
                         <div class="chart-bar-item" style="height:55%" data-label="猎聘"></div>
@@ -1382,24 +1530,31 @@
                         <div class="chart-bar-item" style="height:35%" data-label="校园"></div>
                     </div>
                 </div>
-                <div class="dashboard-card">
+                <div class="dashboard-card dashboard-enter" data-delay="400">
                     <h3>招聘周期预测</h3>
-                    <div class="dashboard-metric">23<span>天</span></div>
+                    <div class="dashboard-metric">
+                        <span class="slot-machine" id="cycle-slot"><span class="slot-machine-inner">23</span></span>
+                        <span>天</span>
+                    </div>
                     <p style="color:var(--text-muted);font-size:12px;margin-top:12px;line-height:1.6">
                         基于历史数据与当前市场活跃度，AI预测本月平均招聘周期为23天，较上月缩短4天。
                     </p>
                 </div>
-                <div class="dashboard-card">
+                <div class="dashboard-card dashboard-enter" data-delay="500">
                     <h3>人才密度热力</h3>
                     <div class="dashboard-metric">苏州<span>TOP1</span></div>
                     <p style="color:var(--text-muted);font-size:12px;margin-top:12px;line-height:1.6">
                         苏州、南通、乌兰察布为数据中心人才密度最高城市，建议加大苏州地区招聘投入。
                     </p>
                 </div>
-                <div class="dashboard-card map-container">
+                <div class="dashboard-card map-container dashboard-enter" data-delay="600">
                     <canvas id="map-canvas"></canvas>
+                    <div class="radar-pulse"></div>
                 </div>
             </div>
+        </div>
+        <div class="thinking-bubble" id="thinking-bubble">
+            <span class="typing-cursor" id="thinking-text"></span>
         </div>
     </div>
 
@@ -2022,6 +2177,216 @@
                 mapAnimId = requestAnimationFrame(drawMap);
             }
             drawMap();
+
+            // Globe Canvas (3D wireframe sphere)
+            const gCanvas = document.getElementById('globe-canvas');
+            const gCtx = gCanvas.getContext('2d');
+            let gw = gCanvas.width = gCanvas.offsetWidth;
+            let gh = gCanvas.height = gCanvas.offsetHeight ? gCanvas.offsetHeight : 400;
+            let globeRotation = 0;
+
+            function drawGlobe() {
+                gCtx.clearRect(0, 0, gw, gh);
+                const cx = gw / 2;
+                const cy = gh / 2;
+                const radius = Math.min(gw, gh) * 0.35;
+                globeRotation += 0.005;
+
+                // Draw wireframe sphere
+                const latLines = 12;
+                const lonLines = 18;
+
+                for (let i = 0; i <= latLines; i++) {
+                    const lat = (Math.PI * i) / latLines - Math.PI / 2;
+                    gCtx.beginPath();
+                    for (let j = 0; j <= lonLines; j++) {
+                        const lon = (2 * Math.PI * j) / lonLines + globeRotation;
+                        const x3d = Math.cos(lat) * Math.cos(lon);
+                        const y3d = Math.sin(lat);
+                        const z3d = Math.cos(lat) * Math.sin(lon);
+                        const scale = radius / (2 - z3d * 0.5);
+                        const x2d = cx + x3d * scale;
+                        const y2d = cy + y3d * scale;
+                        if (j === 0) gCtx.moveTo(x2d, y2d);
+                        else gCtx.lineTo(x2d, y2d);
+                    }
+                    gCtx.strokeStyle = `rgba(0, 240, 255, ${0.1 + Math.abs(Math.cos(lat)) * 0.15})`;
+                    gCtx.lineWidth = 0.5;
+                    gCtx.stroke();
+                }
+
+                for (let i = 0; i < lonLines; i++) {
+                    const lon = (2 * Math.PI * i) / lonLines + globeRotation;
+                    gCtx.beginPath();
+                    for (let j = 0; j <= latLines; j++) {
+                        const lat = (Math.PI * j) / latLines - Math.PI / 2;
+                        const x3d = Math.cos(lat) * Math.cos(lon);
+                        const y3d = Math.sin(lat);
+                        const z3d = Math.cos(lat) * Math.sin(lon);
+                        const scale = radius / (2 - z3d * 0.5);
+                        const x2d = cx + x3d * scale;
+                        const y2d = cy + y3d * scale;
+                        if (j === 0) gCtx.moveTo(x2d, y2d);
+                        else gCtx.lineTo(x2d, y2d);
+                    }
+                    gCtx.strokeStyle = `rgba(0, 240, 255, ${0.08 + Math.abs(Math.cos(lon - globeRotation)) * 0.12})`;
+                    gCtx.lineWidth = 0.5;
+                    gCtx.stroke();
+                }
+
+                // City dots on globe
+                const cityPoints = [
+                    { lat: 31.3, lon: 120.6, name: '苏州' },
+                    { lat: 32.0, lon: 120.9, name: '南通' },
+                    { lat: 41.0, lon: 113.1, name: '乌兰察布' },
+                    { lat: 31.2, lon: 121.5, name: '上海' },
+                    { lat: 39.9, lon: 116.4, name: '北京' },
+                    { lat: 22.5, lon: 114.1, name: '深圳' },
+                    { lat: 30.7, lon: 104.1, name: '成都' },
+                    { lat: 34.3, lon: 108.9, name: '西安' }
+                ];
+
+                cityPoints.forEach(city => {
+                    const latRad = (city.lat * Math.PI) / 180;
+                    const lonRad = (city.lon * Math.PI) / 180 + globeRotation;
+                    const x3d = Math.cos(latRad) * Math.cos(lonRad);
+                    const y3d = Math.sin(latRad);
+                    const z3d = Math.cos(latRad) * Math.sin(lonRad);
+                    const scale = radius / (2 - z3d * 0.5);
+                    const x2d = cx + x3d * scale;
+                    const y2d = cy + y3d * scale;
+
+                    if (z3d > -0.3) {
+                        gCtx.beginPath();
+                        gCtx.arc(x2d, y2d, 3 + Math.sin(Date.now() * 0.003 + city.lon) * 1.5, 0, Math.PI * 2);
+                        gCtx.fillStyle = '#00f0ff';
+                        gCtx.shadowColor = '#00f0ff';
+                        gCtx.shadowBlur = 10;
+                        gCtx.fill();
+                        gCtx.shadowBlur = 0;
+                    }
+                });
+
+                requestAnimationFrame(drawGlobe);
+            }
+            drawGlobe();
+
+            // Line Chart Canvas
+            const lCanvas = document.getElementById('salary-line-canvas');
+            const lCtx = lCanvas.getContext('2d');
+            let lw = lCanvas.width = lCanvas.offsetWidth;
+            let lh = lCanvas.height = lCanvas.offsetHeight ? lCanvas.offsetHeight : 150;
+            let lineProgress = 0;
+
+            const lineData = [12, 14, 13, 15, 16, 15.5, 17, 18, 17.5, 18.5];
+            function drawLine() {
+                lCtx.clearRect(0, 0, lw, lh);
+                lineProgress = Math.min(lineProgress + 0.015, 1);
+
+                const padding = 20;
+                const chartW = lw - padding * 2;
+                const chartH = lh - padding * 2;
+                const maxVal = 20;
+                const stepX = chartW / (lineData.length - 1);
+
+                // Grid lines
+                lCtx.strokeStyle = 'rgba(0, 240, 255, 0.05)';
+                lCtx.lineWidth = 0.5;
+                for (let i = 0; i <= 4; i++) {
+                    const y = padding + (chartH / 4) * i;
+                    lCtx.beginPath();
+                    lCtx.moveTo(padding, y);
+                    lCtx.lineTo(lw - padding, y);
+                    lCtx.stroke();
+                }
+
+                // Draw line
+                lCtx.beginPath();
+                const drawCount = Math.floor(lineData.length * lineProgress);
+                for (let i = 0; i <= drawCount; i++) {
+                    const x = padding + i * stepX;
+                    const y = padding + chartH - (lineData[i] / maxVal) * chartH;
+                    if (i === 0) lCtx.moveTo(x, y);
+                    else lCtx.lineTo(x, y);
+                }
+                lCtx.strokeStyle = '#00f0ff';
+                lCtx.lineWidth = 2;
+                lCtx.shadowColor = '#00f0ff';
+                lCtx.shadowBlur = 10;
+                lCtx.stroke();
+                lCtx.shadowBlur = 0;
+
+                // Fill area under line
+                if (drawCount >= lineData.length - 1) {
+                    lCtx.lineTo(padding + drawCount * stepX, padding + chartH);
+                    lCtx.lineTo(padding, padding + chartH);
+                    lCtx.closePath();
+                    lCtx.fillStyle = 'rgba(0, 240, 255, 0.05)';
+                    lCtx.fill();
+                }
+
+                // Draw points
+                for (let i = 0; i <= drawCount; i++) {
+                    const x = padding + i * stepX;
+                    const y = padding + chartH - (lineData[i] / maxVal) * chartH;
+                    lCtx.beginPath();
+                    lCtx.arc(x, y, 3, 0, Math.PI * 2);
+                    lCtx.fillStyle = '#00f0ff';
+                    lCtx.fill();
+                }
+
+                if (lineProgress < 1) requestAnimationFrame(drawLine);
+            }
+            drawLine();
+
+            // Thinking bubble with typing effect
+            const thinkingBubble = document.getElementById('thinking-bubble');
+            const thinkingText = document.getElementById('thinking-text');
+            const thoughts = [
+                '正在分析苏州地区暖通工程师薪资趋势...',
+                '检测到BOSS直聘渠道转化率较上月提升5.2%',
+                '建议加大乌兰察布地区招聘预算投入',
+                '发现3位高匹配度候选人，建议优先联系',
+                'AI预测本月招聘周期将缩短至21天'
+            ];
+            let thoughtIndex = 0;
+            let charIndex = 0;
+
+            function typeThought() {
+                if (charIndex === 0) {
+                    thinkingBubble.classList.add('active');
+                }
+                const text = thoughts[thoughtIndex];
+                if (charIndex < text.length) {
+                    thinkingText.textContent = text.substring(0, charIndex + 1);
+                    charIndex++;
+                    setTimeout(typeThought, 50 + Math.random() * 50);
+                } else {
+                    setTimeout(() => {
+                        thinkingBubble.classList.remove('active');
+                        setTimeout(() => {
+                            thoughtIndex = (thoughtIndex + 1) % thoughts.length;
+                            charIndex = 0;
+                            typeThought();
+                        }, 2000);
+                    }, 3000);
+                }
+            }
+            setTimeout(typeThought, 1500);
+
+            // Staggered entrance animation
+            document.querySelectorAll('.dashboard-enter').forEach((el, i) => {
+                const delay = parseInt(el.dataset.delay) || 0;
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, 800 + delay);
+            });
+
+            // Duplicate ticker for seamless loop
+            const ticker = document.getElementById('data-ticker');
+            if (ticker) {
+                ticker.innerHTML += ticker.innerHTML;
+            }
         }
     </script>
 </body>
