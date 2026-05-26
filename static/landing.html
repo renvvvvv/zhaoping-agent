@@ -1133,6 +1133,166 @@
             transform: perspective(1000px) rotateX(0) translateY(0);
         }
 
+        /* ===== AGENT INTRO ===== */
+        .agent-intro {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+            align-items: center;
+        }
+        .agent-intro-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .agent-intro-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .agent-intro-icon {
+            width: 96px; height: 96px;
+            border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 48px;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(255, 0, 110, 0.2));
+            border: 2px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.15);
+            margin-bottom: 24px;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%, 100% { box-shadow: 0 0 40px rgba(0, 240, 255, 0.15); }
+            50% { box-shadow: 0 0 60px rgba(0, 240, 255, 0.3); }
+        }
+        .agent-intro h2 {
+            font-family: var(--font-display);
+            font-size: 28px; color: var(--text-primary);
+            margin-bottom: 16px; letter-spacing: 2px;
+        }
+        .agent-intro p {
+            color: var(--text-secondary); font-size: 14px;
+            line-height: 1.8; margin-bottom: 24px;
+        }
+        .agent-intro-right {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+        }
+        .agent-intro-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .capability-list {
+            display: flex; flex-direction: column;
+            gap: 16px;
+        }
+        .capability-item {
+            display: flex; align-items: flex-start; gap: 16px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .capability-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .capability-item:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 240, 255, 0.08);
+            transform: translateX(8px);
+        }
+        .capability-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            flex-shrink: 0;
+        }
+        .capability-text h4 {
+            font-size: 14px; color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .capability-text p {
+            font-size: 12px; color: var(--text-muted);
+            margin: 0;
+        }
+        .agent-workflow {
+            margin-top: 48px;
+            padding: 32px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            border-radius: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        .agent-workflow.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .workflow-title {
+            font-family: var(--font-display);
+            font-size: 14px; color: var(--cyan);
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .workflow-steps {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .workflow-step {
+            flex: 1; text-align: center;
+            position: relative;
+        }
+        .workflow-step-num {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 14px; font-weight: 600;
+            color: var(--bg-primary);
+            background: linear-gradient(135deg, var(--cyan), var(--magenta));
+            margin: 0 auto 12px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+        .workflow-step-title {
+            font-size: 12px; color: var(--text-primary);
+            font-weight: 600; margin-bottom: 4px;
+        }
+        .workflow-step-desc {
+            font-size: 11px; color: var(--text-muted);
+        }
+        .workflow-connector {
+            position: absolute; top: 20px; right: -50%;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+        }
+        .workflow-step:last-child .workflow-connector {
+            display: none;
+        }
+        .typewriter-text {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--cyan);
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--cyan); }
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             body { cursor: auto; }
@@ -1499,6 +1659,83 @@
                 <div class="analysis-hero-overlay">
                     <h2>全球人才洞察</h2>
                     <p>实时监控全国数据中心人才分布与流动趋势</p>
+                </div>
+            </div>
+
+            <!-- Agent Introduction -->
+            <div class="agent-intro">
+                <div class="agent-intro-left" id="agent-intro-left">
+                    <div class="agent-intro-icon">🔍</div>
+                    <h2>招聘分析 Agent</h2>
+                    <p id="agent-intro-text"></p>
+                </div>
+                <div class="agent-intro-right" id="agent-intro-right">
+                    <div class="capability-list">
+                        <div class="capability-item" data-cap-delay="0">
+                            <div class="capability-icon">📋</div>
+                            <div class="capability-text">
+                                <h4>JD智能解析</h4>
+                                <p>深度分析岗位描述，提取核心技能要求与胜任力模型，自动生成人才画像</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="100">
+                            <div class="capability-icon">🌐</div>
+                            <div class="capability-text">
+                                <h4>人才市场洞察</h4>
+                                <p>实时监控全国数据中心人才分布，分析供需关系与薪资趋势，定位高潜市场</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="200">
+                            <div class="capability-icon">🎯</div>
+                            <div class="capability-text">
+                                <h4>招聘策略建议</h4>
+                                <p>基于数据驱动的决策支持，智能推荐最优招聘渠道与策略，提升转化率</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="300">
+                            <div class="capability-icon">📊</div>
+                            <div class="capability-text">
+                                <h4>漏斗分析与预测</h4>
+                                <p>全流程招聘漏斗监控，AI预测招聘周期与成功率，提前预警风险</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow -->
+            <div class="agent-workflow" id="agent-workflow">
+                <div class="workflow-title">Agent 工作流程</div>
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="workflow-step-num">1</div>
+                        <div class="workflow-step-title">输入JD</div>
+                        <div class="workflow-step-desc">上传岗位描述</div>
+                        <div class="workflow-connector"></div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step-num">2</div>
+                        <div class="workflow-step-title">AI解析</div>
+                        <div class="workflow-step-desc">提取关键要素</div>
+                        <div class="workflow-connector"></div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step-num">3</div>
+                        <div class="workflow-step-title">市场扫描</div>
+                        <div class="workflow-step-desc">分析人才分布</div>
+                        <div class="workflow-connector"></div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step-num">4</div>
+                        <div class="workflow-step-title">策略生成</div>
+                        <div class="workflow-step-desc">输出招聘建议</div>
+                        <div class="workflow-connector"></div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step-num">5</div>
+                        <div class="workflow-step-title">持续监控</div>
+                        <div class="workflow-step-desc">实时数据追踪</div>
+                    </div>
                 </div>
             </div>
 
@@ -2379,6 +2616,43 @@
                 const delay = parseInt(el.dataset.delay) || 0;
                 setTimeout(() => {
                     el.classList.add('visible');
+                }, 800 + delay);
+            });
+
+            // Agent intro typing effect
+            const introText = document.getElementById('agent-intro-text');
+            const introLeft = document.getElementById('agent-intro-left');
+            const introRight = document.getElementById('agent-intro-right');
+            const workflow = document.getElementById('agent-workflow');
+
+            if (introLeft) {
+                setTimeout(() => introLeft.classList.add('visible'), 400);
+            }
+            if (introRight) {
+                setTimeout(() => introRight.classList.add('visible'), 600);
+            }
+            if (workflow) {
+                setTimeout(() => workflow.classList.add('visible'), 1000);
+            }
+
+            if (introText) {
+                const introContent = '招聘分析 Agent 是嘉尔秒聘PRO的"战略大脑"，基于Claude 3.5与GPT-4多模型容灾架构，专为数据中心人才招聘场景打造。它能够深度解析JD岗位描述，实时扫描全国人才市场动态，分析薪资趋势与供需关系，并基于历史数据生成最优招聘策略建议，让每一次招聘决策都有数据支撑。';
+                let introChar = 0;
+                function typeIntro() {
+                    if (introChar < introContent.length) {
+                        introText.textContent += introContent.charAt(introChar);
+                        introChar++;
+                        setTimeout(typeIntro, 30);
+                    }
+                }
+                setTimeout(typeIntro, 800);
+            }
+
+            // Capability items staggered entrance
+            document.querySelectorAll('.capability-item').forEach((item, i) => {
+                const delay = parseInt(item.dataset.capDelay) || 0;
+                setTimeout(() => {
+                    item.classList.add('visible');
                 }, 800 + delay);
             });
 
