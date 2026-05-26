@@ -867,6 +867,144 @@
             to { opacity: 1; }
         }
 
+        /* ===== AGENT DETAIL OVERLAYS ===== */
+        .agent-detail {
+            position: fixed; inset: 0; z-index: 200;
+            background: var(--bg-primary);
+            overflow-y: auto; overflow-x: hidden;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .agent-detail.active {
+            opacity: 1; pointer-events: all;
+        }
+        .agent-detail-header {
+            position: sticky; top: 0; z-index: 10;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 48px;
+            background: rgba(5, 8, 16, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+        }
+        .agent-detail-back {
+            display: flex; align-items: center; gap: 10px;
+            color: var(--cyan); font-size: 13px;
+            font-family: var(--font-display);
+            letter-spacing: 1px; text-transform: uppercase;
+            cursor: pointer; background: none; border: none;
+            padding: 10px 20px; border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .agent-detail-back:hover {
+            background: rgba(0, 240, 255, 0.1);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        .agent-detail-title {
+            font-family: var(--font-display);
+            font-size: 18px; color: var(--text-primary);
+            letter-spacing: 2px;
+        }
+        .agent-detail-body {
+            padding: 48px;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        /* ===== FLIP TRANSITION ===== */
+        .flip-card {
+            position: fixed; z-index: 300;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .flip-card.animating {
+            pointer-events: none;
+        }
+
+        /* ===== ANALYSIS AGENT DASHBOARD ===== */
+        #agent-analysis .agent-canvas-bg {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+        .dashboard-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 24px; position: relative; z-index: 1;
+        }
+        .dashboard-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            border-radius: 20px; padding: 28px;
+            transition: all 0.4s ease;
+            position: relative; overflow: hidden;
+        }
+        .dashboard-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            transform: scaleX(0); transition: transform 0.5s ease;
+        }
+        .dashboard-card:hover::before { transform: scaleX(1); }
+        .dashboard-card:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 16px 32px rgba(0, 240, 255, 0.08);
+            transform: translateY(-4px);
+        }
+        .dashboard-card h3 {
+            font-family: var(--font-display);
+            font-size: 13px; color: var(--cyan);
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .dashboard-metric {
+            font-family: var(--font-mono);
+            font-size: 36px; color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .dashboard-metric span {
+            font-size: 14px; color: var(--text-muted);
+        }
+        .funnel-container {
+            grid-column: span 2;
+            min-height: 400px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        #funnel-canvas {
+            width: 100%; height: 400px;
+        }
+        .map-container {
+            grid-column: span 2;
+            min-height: 350px;
+            position: relative;
+        }
+        #map-canvas {
+            width: 100%; height: 350px;
+        }
+        .chart-bar {
+            display: flex; align-items: flex-end;
+            gap: 8px; height: 120px;
+            margin-top: 16px;
+        }
+        .chart-bar-item {
+            flex: 1;
+            background: linear-gradient(180deg, var(--cyan), rgba(0, 240, 255, 0.2));
+            border-radius: 4px 4px 0 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            opacity: 0.7;
+        }
+        .chart-bar-item:hover {
+            opacity: 1; filter: brightness(1.3);
+        }
+        .chart-bar-item::after {
+            content: attr(data-label);
+            position: absolute; bottom: -20px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px; color: var(--text-muted);
+            white-space: nowrap;
+            font-family: var(--font-mono);
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             body { cursor: auto; }
@@ -884,6 +1022,9 @@
             .cta { padding: 80px 24px; }
             .cta-card { padding: 40px 24px; }
             .footer { padding: 60px 24px 30px; }
+            .agent-detail-body { padding: 24px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .funnel-container, .map-container { grid-column: span 1; }
         }
     </style>
 </head>
@@ -1063,25 +1204,25 @@
             <p>每个Agent专注一个领域，协同完成招聘全流程</p>
         </div>
         <div class="agents-grid">
-            <div class="agent-card" data-tilt>
+            <div class="agent-card" data-tilt data-agent="analysis">
                 <div class="agent-icon">🔍</div>
                 <h3>招聘分析 Agent</h3>
                 <p>负责JD深度分析、人才市场洞察、招聘策略建议，为HR提供数据驱动的决策支持。</p>
                 <span class="agent-tag tag-core">策略层</span>
             </div>
-            <div class="agent-card" data-tilt>
+            <div class="agent-card" data-tilt data-agent="screening">
                 <div class="agent-icon">📄</div>
                 <h3>简历筛选 Agent</h3>
                 <p>自动解析PDF/DOC/图片简历，提取结构化信息，进行胜任力评分与去重检测。</p>
                 <span class="agent-tag tag-parse">核心层</span>
             </div>
-            <div class="agent-card" data-tilt>
+            <div class="agent-card" data-tilt data-agent="interview">
                 <div class="agent-icon">🎙️</div>
                 <h3>AI面试 Agent</h3>
                 <p>语音转文字、说话人分离、关键问答提取、AI辅助生成面试评语与考察建议。</p>
                 <span class="agent-tag tag-audio">辅助层</span>
             </div>
-            <div class="agent-card" data-tilt>
+            <div class="agent-card" data-tilt data-agent="report">
                 <div class="agent-icon">📊</div>
                 <h3>周报生成 Agent</h3>
                 <p>自动汇总招聘漏斗数据、转化率分析、趋势预测，一键生成招聘周报与月报。</p>
@@ -1204,6 +1345,117 @@
             </div>
         </div>
     </section>
+
+    <!-- Agent Detail: Analysis -->
+    <div class="agent-detail" id="agent-analysis">
+        <canvas class="agent-canvas-bg" id="analysis-bg-canvas"></canvas>
+        <div class="agent-detail-header">
+            <button class="agent-detail-back" onclick="closeAgentDetail()">← 返回</button>
+            <div class="agent-detail-title">招聘分析 AGENT · 战略仪表盘</div>
+            <div style="width:80px"></div>
+        </div>
+        <div class="agent-detail-body">
+            <div class="dashboard-grid">
+                <div class="dashboard-card funnel-container">
+                    <canvas id="funnel-canvas"></canvas>
+                </div>
+                <div class="dashboard-card">
+                    <h3>市场薪资趋势</h3>
+                    <div class="dashboard-metric">18.5<span>K/月</span></div>
+                    <div class="chart-bar">
+                        <div class="chart-bar-item" style="height:40%" data-label="暖通"></div>
+                        <div class="chart-bar-item" style="height:65%" data-label="电气"></div>
+                        <div class="chart-bar-item" style="height:55%" data-label="弱电"></div>
+                        <div class="chart-bar-item" style="height:80%" data-label="值班长"></div>
+                        <div class="chart-bar-item" style="height:70%" data-label="工程师"></div>
+                        <div class="chart-bar-item" style="height:90%" data-label="主管"></div>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>渠道转化率</h3>
+                    <div class="dashboard-metric">62.3<span>%</span></div>
+                    <div class="chart-bar">
+                        <div class="chart-bar-item" style="height:30%" data-label="BOSS"></div>
+                        <div class="chart-bar-item" style="height:55%" data-label="猎聘"></div>
+                        <div class="chart-bar-item" style="height:45%" data-label="内推"></div>
+                        <div class="chart-bar-item" style="height:70%" data-label="官网"></div>
+                        <div class="chart-bar-item" style="height:35%" data-label="校园"></div>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>招聘周期预测</h3>
+                    <div class="dashboard-metric">23<span>天</span></div>
+                    <p style="color:var(--text-muted);font-size:12px;margin-top:12px;line-height:1.6">
+                        基于历史数据与当前市场活跃度，AI预测本月平均招聘周期为23天，较上月缩短4天。
+                    </p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>人才密度热力</h3>
+                    <div class="dashboard-metric">苏州<span>TOP1</span></div>
+                    <p style="color:var(--text-muted);font-size:12px;margin-top:12px;line-height:1.6">
+                        苏州、南通、乌兰察布为数据中心人才密度最高城市，建议加大苏州地区招聘投入。
+                    </p>
+                </div>
+                <div class="dashboard-card map-container">
+                    <canvas id="map-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Detail: Screening (Placeholder) -->
+    <div class="agent-detail" id="agent-screening">
+        <div class="agent-detail-header">
+            <button class="agent-detail-back" onclick="closeAgentDetail()">← 返回</button>
+            <div class="agent-detail-title">简历筛选 AGENT · 解析控制台</div>
+            <div style="width:80px"></div>
+        </div>
+        <div class="agent-detail-body" style="text-align:center;padding-top:120px">
+            <div style="font-size:64px;margin-bottom:24px">📄</div>
+            <h2 style="font-family:var(--font-display);font-size:24px;margin-bottom:16px">简历筛选 Agent</h2>
+            <p style="color:var(--text-secondary);max-width:480px;margin:0 auto">
+                自动解析PDF/DOC/图片简历，提取结构化信息，进行胜任力评分与去重检测。
+                <br><br>
+                <span style="color:var(--text-muted);font-size:13px">此页面正在开发中，即将上线...</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Agent Detail: Interview (Placeholder) -->
+    <div class="agent-detail" id="agent-interview">
+        <div class="agent-detail-header">
+            <button class="agent-detail-back" onclick="closeAgentDetail()">← 返回</button>
+            <div class="agent-detail-title">AI面试 AGENT · 声波实验室</div>
+            <div style="width:80px"></div>
+        </div>
+        <div class="agent-detail-body" style="text-align:center;padding-top:120px">
+            <div style="font-size:64px;margin-bottom:24px">🎙️</div>
+            <h2 style="font-family:var(--font-display);font-size:24px;margin-bottom:16px">AI面试 Agent</h2>
+            <p style="color:var(--text-secondary);max-width:480px;margin:0 auto">
+                语音转文字、说话人分离、关键问答提取、AI辅助生成面试评语与考察建议。
+                <br><br>
+                <span style="color:var(--text-muted);font-size:13px">此页面正在开发中，即将上线...</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Agent Detail: Report (Placeholder) -->
+    <div class="agent-detail" id="agent-report">
+        <div class="agent-detail-header">
+            <button class="agent-detail-back" onclick="closeAgentDetail()">← 返回</button>
+            <div class="agent-detail-title">周报生成 AGENT · 报告铸造厂</div>
+            <div style="width:80px"></div>
+        </div>
+        <div class="agent-detail-body" style="text-align:center;padding-top:120px">
+            <div style="font-size:64px;margin-bottom:24px">📊</div>
+            <h2 style="font-family:var(--font-display);font-size:24px;margin-bottom:16px">周报生成 Agent</h2>
+            <p style="color:var(--text-secondary);max-width:480px;margin:0 auto">
+                自动汇总招聘漏斗数据、转化率分析、趋势预测，一键生成招聘周报与月报。
+                <br><br>
+                <span style="color:var(--text-muted);font-size:13px">此页面正在开发中，即将上线...</span>
+            </p>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -1537,6 +1789,240 @@
                 if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
+
+        // ===== FLIP AGENT TRANSITION =====
+        let activeAgent = null;
+        let flipEl = null;
+
+        document.querySelectorAll('[data-agent]').forEach(card => {
+            card.addEventListener('click', () => openAgentDetail(card));
+            card.style.cursor = 'pointer';
+        });
+
+        function openAgentDetail(card) {
+            const agentId = card.dataset.agent;
+            const detail = document.getElementById('agent-' + agentId);
+            if (!detail) return;
+
+            activeAgent = agentId;
+            const rect = card.getBoundingClientRect();
+
+            // Create flip element
+            flipEl = document.createElement('div');
+            flipEl.className = 'flip-card';
+            flipEl.style.left = rect.left + 'px';
+            flipEl.style.top = rect.top + 'px';
+            flipEl.style.width = rect.width + 'px';
+            flipEl.style.height = rect.height + 'px';
+            flipEl.style.background = 'rgba(15, 23, 42, 0.8)';
+            flipEl.style.borderRadius = '24px';
+            flipEl.style.border = '1px solid rgba(0, 240, 255, 0.3)';
+            flipEl.style.boxShadow = '0 0 40px rgba(0, 240, 255, 0.2)';
+            document.body.appendChild(flipEl);
+
+            // Animate to fullscreen
+            requestAnimationFrame(() => {
+                flipEl.classList.add('animating');
+                flipEl.style.left = '0px';
+                flipEl.style.top = '0px';
+                flipEl.style.width = '100vw';
+                flipEl.style.height = '100vh';
+                flipEl.style.borderRadius = '0px';
+                flipEl.style.background = '#050810';
+            });
+
+            // Show detail after transition
+            setTimeout(() => {
+                flipEl.remove();
+                flipEl = null;
+                detail.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                initAgentCanvas(agentId);
+            }, 600);
+        }
+
+        function closeAgentDetail() {
+            const detail = document.getElementById('agent-' + activeAgent);
+            if (!detail) return;
+
+            detail.classList.remove('active');
+            document.body.style.overflow = '';
+            activeAgent = null;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && activeAgent) closeAgentDetail();
+        });
+
+        // ===== AGENT CANVAS EFFECTS =====
+        function initAgentCanvas(agentId) {
+            if (agentId === 'analysis') initAnalysisCanvas();
+        }
+
+        // Analysis Agent: Funnel + Map
+        let funnelAnimId, mapAnimId;
+        function initAnalysisCanvas() {
+            // Funnel Canvas
+            const fCanvas = document.getElementById('funnel-canvas');
+            const fCtx = fCanvas.getContext('2d');
+            let fw = fCanvas.width = fCanvas.offsetWidth;
+            let fh = fCanvas.height = 400;
+
+            const funnelLayers = [
+                { label: '简历池', count: 1247, color: '#00f0ff', width: 0.9 },
+                { label: '初筛通过', count: 586, color: '#00c8ff', width: 0.7 },
+                { label: '进入面试', count: 234, color: '#0099ff', width: 0.5 },
+                { label: 'Offer发放', count: 89, color: '#0066ff', width: 0.35 },
+                { label: '成功入职', count: 62, color: '#ff006e', width: 0.2 }
+            ];
+            let funnelParticles = [];
+
+            class FunnelParticle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.layer = Math.floor(Math.random() * funnelLayers.length);
+                    this.y = 50 + this.layer * 70;
+                    this.x = fw / 2 + (Math.random() - 0.5) * fw * funnelLayers[this.layer].width * 0.8;
+                    this.vx = (Math.random() - 0.5) * 0.3;
+                    this.vy = 0.5 + Math.random() * 0.5;
+                    this.size = Math.random() * 2 + 1;
+                    this.life = 1;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.life -= 0.003;
+                    if (this.y > fh - 20 || this.life <= 0) this.reset();
+                }
+                draw() {
+                    fCtx.globalAlpha = this.life * 0.6;
+                    fCtx.fillStyle = funnelLayers[this.layer].color;
+                    fCtx.beginPath();
+                    fCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    fCtx.fill();
+                    fCtx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < 60; i++) funnelParticles.push(new FunnelParticle());
+
+            function drawFunnel() {
+                fCtx.clearRect(0, 0, fw, fh);
+                const centerX = fw / 2;
+                const startY = 50;
+                const layerH = 60;
+
+                funnelLayers.forEach((layer, i) => {
+                    const y = startY + i * (layerH + 10);
+                    const w = fw * layer.width;
+                    const x = centerX - w / 2;
+
+                    // Draw trapezoid
+                    fCtx.fillStyle = layer.color + '15';
+                    fCtx.strokeStyle = layer.color + '60';
+                    fCtx.lineWidth = 1;
+                    fCtx.beginPath();
+                    if (i < funnelLayers.length - 1) {
+                        const nextW = fw * funnelLayers[i + 1].width;
+                        const nextX = centerX - nextW / 2;
+                        fCtx.moveTo(x, y);
+                        fCtx.lineTo(x + w, y);
+                        fCtx.lineTo(nextX + nextW, y + layerH);
+                        fCtx.lineTo(nextX, y + layerH);
+                    } else {
+                        fCtx.rect(x, y, w, layerH);
+                    }
+                    fCtx.closePath();
+                    fCtx.fill();
+                    fCtx.stroke();
+
+                    // Label
+                    fCtx.fillStyle = layer.color;
+                    fCtx.font = 'bold 13px "Orbitron", "Noto Sans SC"';
+                    fCtx.textAlign = 'left';
+                    fCtx.fillText(layer.label, x + 12, y + 24);
+
+                    // Count
+                    fCtx.font = '16px "JetBrains Mono", monospace';
+                    fCtx.fillText(layer.count.toLocaleString(), x + 12, y + 46);
+                });
+
+                // Particles
+                funnelParticles.forEach(p => { p.update(); p.draw(); });
+                funnelAnimId = requestAnimationFrame(drawFunnel);
+            }
+            drawFunnel();
+
+            // Map Canvas (simplified dot matrix)
+            const mCanvas = document.getElementById('map-canvas');
+            const mCtx2 = mCanvas.getContext('2d');
+            let mw = mCanvas.width = mCanvas.offsetWidth;
+            let mh = mCanvas.height = 350;
+
+            const cities = [
+                { name: '苏州', x: 0.72, y: 0.55, heat: 0.95 },
+                { name: '南通', x: 0.74, y: 0.48, heat: 0.72 },
+                { name: '乌兰察布', x: 0.58, y: 0.32, heat: 0.68 },
+                { name: '上海', x: 0.76, y: 0.56, heat: 0.85 },
+                { name: '北京', x: 0.65, y: 0.35, heat: 0.78 },
+                { name: '深圳', x: 0.68, y: 0.72, heat: 0.60 },
+                { name: '成都', x: 0.48, y: 0.58, heat: 0.45 },
+                { name: '西安', x: 0.52, y: 0.48, heat: 0.38 }
+            ];
+            let mapPulse = 0;
+
+            function drawMap() {
+                mCtx2.clearRect(0, 0, mw, mh);
+                mapPulse += 0.02;
+
+                // Grid background
+                mCtx2.strokeStyle = 'rgba(0, 240, 255, 0.05)';
+                mCtx2.lineWidth = 0.5;
+                for (let i = 0; i < mw; i += 20) {
+                    mCtx2.beginPath(); mCtx2.moveTo(i, 0); mCtx2.lineTo(i, mh); mCtx2.stroke();
+                }
+                for (let i = 0; i < mh; i += 20) {
+                    mCtx2.beginPath(); mCtx2.moveTo(0, i); mCtx2.lineTo(mw, i); mCtx2.stroke();
+                }
+
+                cities.forEach(city => {
+                    const cx = city.x * mw;
+                    const cy = city.y * mh;
+                    const pulseR = 10 + Math.sin(mapPulse + city.heat * 10) * 6;
+
+                    // Heat ripple
+                    mCtx2.beginPath();
+                    mCtx2.arc(cx, cy, pulseR * 3, 0, Math.PI * 2);
+                    mCtx2.fillStyle = `rgba(0, 240, 255, ${city.heat * 0.05})`;
+                    mCtx2.fill();
+
+                    mCtx2.beginPath();
+                    mCtx2.arc(cx, cy, pulseR, 0, Math.PI * 2);
+                    mCtx2.fillStyle = `rgba(0, 240, 255, ${city.heat * 0.3})`;
+                    mCtx2.fill();
+
+                    // Core
+                    mCtx2.beginPath();
+                    mCtx2.arc(cx, cy, 4, 0, Math.PI * 2);
+                    mCtx2.fillStyle = '#00f0ff';
+                    mCtx2.shadowColor = '#00f0ff';
+                    mCtx2.shadowBlur = 15;
+                    mCtx2.fill();
+                    mCtx2.shadowBlur = 0;
+
+                    // Label
+                    mCtx2.fillStyle = '#94a3b8';
+                    mCtx2.font = '11px "Noto Sans SC", sans-serif';
+                    mCtx2.textAlign = 'center';
+                    mCtx2.fillText(city.name, cx, cy + 22);
+                });
+
+                mapAnimId = requestAnimationFrame(drawMap);
+            }
+            drawMap();
+        }
     </script>
 </body>
 </html>
