@@ -909,6 +909,67 @@
             max-width: 1400px; margin: 0 auto;
         }
 
+        /* ===== DIMENSION GRID ===== */
+        .dimension-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin: 40px 0;
+            position: relative; z-index: 1;
+        }
+        .dimension-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px 20px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .dimension-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+            opacity: 0.5;
+        }
+        .dimension-card:hover {
+            border-color: rgba(0, 240, 255, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 240, 255, 0.06);
+        }
+        .dimension-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .dimension-label {
+            font-family: var(--font-display);
+            font-size: 11px;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .dimension-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .dimension-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        @media (max-width: 1100px) {
+            .dimension-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .dimension-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
         /* ===== FLIP TRANSITION ===== */
         .flip-card {
             position: fixed; z-index: 300;
@@ -2183,6 +2244,40 @@
                 </div>
             </div>
 
+            <!-- Dimension Grid -->
+            <div class="dimension-grid">
+                <div class="dimension-card">
+                    <div class="dimension-icon">📥</div>
+                    <div class="dimension-label">Input</div>
+                    <div class="dimension-title">输入维度</div>
+                    <div class="dimension-desc">解析后的简历结构化数据、岗位胜任力模型（≥500周算力）</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">📤</div>
+                    <div class="dimension-label">Output</div>
+                    <div class="dimension-title">输出维度</div>
+                    <div class="dimension-desc">候选人评估方案、岗位评估人推荐、Top候选人排序</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">⚙️</div>
+                    <div class="dimension-label">Tech Stack</div>
+                    <div class="dimension-title">技术栈</div>
+                    <div class="dimension-desc">本地化胜任力模型 + 后端API写回多维表格</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">🔗</div>
+                    <div class="dimension-label">Pipeline</div>
+                    <div class="dimension-title">关联节点</div>
+                    <div class="dimension-desc">STAGE 03 胜任力评估</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">📊</div>
+                    <div class="dimension-label">Metrics</div>
+                    <div class="dimension-title">核心指标</div>
+                    <div class="dimension-desc">算力规模≥500周、评估维度覆盖率</div>
+                </div>
+            </div>
+
             <!-- Workflow -->
             <div class="agent-workflow" id="agent-workflow">
                 <div class="workflow-title">Agent 工作流程</div>
@@ -2322,6 +2417,41 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Dimension Grid -->
+            <div class="dimension-grid">
+                <div class="dimension-card">
+                    <div class="dimension-icon">📥</div>
+                    <div class="dimension-label">Input</div>
+                    <div class="dimension-title">输入维度</div>
+                    <div class="dimension-desc">人才池中待处理简历、对应岗位JD</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">📤</div>
+                    <div class="dimension-label">Output</div>
+                    <div class="dimension-title">输出维度</div>
+                    <div class="dimension-desc">结构化字段（学历/经验/技能/薪资）、匹配度评分</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">⚙️</div>
+                    <div class="dimension-label">Tech Stack</div>
+                    <div class="dimension-title">技术栈</div>
+                    <div class="dimension-desc">AI抽取 + 后端API + 多维表格</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">🔗</div>
+                    <div class="dimension-label">Pipeline</div>
+                    <div class="dimension-title">关联节点</div>
+                    <div class="dimension-desc">STAGE 02 AI拉取&解析</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">📊</div>
+                    <div class="dimension-label">Metrics</div>
+                    <div class="dimension-title">核心指标</div>
+                    <div class="dimension-desc">关键字段抽取准确率、初筛过滤率</div>
+                </div>
+            </div>
+
             <div class="screening-workspace">
                 <div class="upload-zone" id="upload-zone">
                     <div class="upload-pulse"></div>
@@ -2482,6 +2612,41 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Dimension Grid -->
+            <div class="dimension-grid">
+                <div class="dimension-card">
+                    <div class="dimension-icon">📥</div>
+                    <div class="dimension-label">Input</div>
+                    <div class="dimension-title">输入维度</div>
+                    <div class="dimension-desc">面试语音记录、胜任力模型对比基准</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">📤</div>
+                    <div class="dimension-label">Output</div>
+                    <div class="dimension-title">输出维度</div>
+                    <div class="dimension-desc">语音纪要文字、关键要点提炼、结构化评语</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">⚙️</div>
+                    <div class="dimension-label">Tech Stack</div>
+                    <div class="dimension-title">技术栈</div>
+                    <div class="dimension-desc">语音转文字 + AI评估 + 胜任力模型对比</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">🔗</div>
+                    <div class="dimension-label">Pipeline</div>
+                    <div class="dimension-title">关联节点</div>
+                    <div class="dimension-desc">STAGE 06 面试评价</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">📊</div>
+                    <div class="dimension-label">Metrics</div>
+                    <div class="dimension-title">核心指标</div>
+                    <div class="dimension-desc">语音转文字准确率、要点提炼完整度</div>
+                </div>
+            </div>
+
             <div class="interview-stage">
                 <div class="waveform-container">
                     <canvas id="waveform-canvas"></canvas>
@@ -2583,6 +2748,41 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Dimension Grid -->
+            <div class="dimension-grid">
+                <div class="dimension-card">
+                    <div class="dimension-icon">📥</div>
+                    <div class="dimension-label">Input</div>
+                    <div class="dimension-title">输入维度</div>
+                    <div class="dimension-desc">主流程招聘数据（简历/面试/Offer/入职状态）</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">📤</div>
+                    <div class="dimension-label">Output</div>
+                    <div class="dimension-title">输出维度</div>
+                    <div class="dimension-desc">可视化周报卡片、转化漏斗分析</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">⚙️</div>
+                    <div class="dimension-label">Tech Stack</div>
+                    <div class="dimension-title">技术栈</div>
+                    <div class="dimension-desc">后端定时任务 + 卡片渲染</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">🔗</div>
+                    <div class="dimension-label">Pipeline</div>
+                    <div class="dimension-title">关联节点</div>
+                    <div class="dimension-desc">全流程数据读取</div>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-icon">📊</div>
+                    <div class="dimension-label">Metrics</div>
+                    <div class="dimension-title">核心指标</div>
+                    <div class="dimension-desc">数据同步延迟、卡片生成耗时</div>
+                </div>
+            </div>
+
             <div class="report-factory">
                 <div class="data-sources">
                     <div class="source-card" data-source-delay="0">
