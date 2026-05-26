@@ -1293,6 +1293,486 @@
             50% { border-color: var(--cyan); }
         }
 
+        /* ===== SCREENING AGENT ===== */
+        .screening-workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .upload-zone {
+            min-height: 400px;
+            border: 2px dashed rgba(0, 240, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            background: rgba(0, 240, 255, 0.02);
+        }
+        .upload-zone:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.1);
+        }
+        .upload-zone.scanning {
+            border-color: var(--amber);
+            box-shadow: 0 0 40px rgba(255, 170, 0, 0.2);
+        }
+        .upload-pulse {
+            position: absolute;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 240, 255, 0.3);
+            animation: uploadPulse 2s ease-out infinite;
+        }
+        @keyframes uploadPulse {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            z-index: 1;
+        }
+        .upload-text {
+            font-size: 14px; color: var(--text-secondary);
+            z-index: 1; text-align: center;
+        }
+        .upload-text span {
+            color: var(--cyan); cursor: pointer;
+        }
+        .scan-line {
+            position: absolute;
+            left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+            box-shadow: 0 0 20px var(--amber);
+            opacity: 0;
+        }
+        .scan-line.active {
+            animation: scanMove 2s ease-in-out infinite;
+            opacity: 1;
+        }
+        @keyframes scanMove {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .parse-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .parse-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            opacity: 0;
+            transform: translateX(40px) scale(0.9);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .parse-card.visible {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+        .parse-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: linear-gradient(180deg, var(--cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .parse-card:hover::before {
+            opacity: 1;
+        }
+        .parse-card h4 {
+            font-family: var(--font-display);
+            font-size: 12px; color: var(--cyan);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .parse-card p {
+            font-size: 14px; color: var(--text-primary);
+            margin: 0;
+        }
+        .parse-card .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 4px;
+            font-size: 11px; color: var(--cyan);
+            font-family: var(--font-mono);
+            margin-top: 8px;
+            margin-right: 6px;
+        }
+        .radar-chart-container {
+            height: 250px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #radar-canvas {
+            width: 100%; height: 100%;
+        }
+        .score-ring-container {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .score-ring {
+            width: 120px; height: 120px;
+            position: relative;
+            text-align: center;
+        }
+        .score-ring svg {
+            transform: rotate(-90deg);
+        }
+        .score-ring-bg {
+            fill: none;
+            stroke: rgba(0, 240, 255, 0.08);
+            stroke-width: 6;
+        }
+        .score-ring-fill {
+            fill: none;
+            stroke: var(--cyan);
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.5s ease;
+        }
+        .score-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-mono);
+            font-size: 24px;
+            color: var(--cyan);
+        }
+        .score-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+        .dedup-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 0, 110, 0.2);
+            border-radius: 16px;
+        }
+        .dedup-section h3 {
+            font-family: var(--font-display);
+            font-size: 13px;
+            color: var(--magenta);
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .dedup-list {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+        }
+        .dedup-item {
+            min-width: 200px;
+            padding: 16px;
+            background: rgba(255, 0, 110, 0.05);
+            border: 1px solid rgba(255, 0, 110, 0.15);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .dedup-item:hover {
+            border-color: rgba(255, 0, 110, 0.4);
+            box-shadow: 0 8px 24px rgba(255, 0, 110, 0.1);
+        }
+        .dedup-item.matched {
+            border-color: rgba(255, 0, 110, 0.4);
+            animation: dedupPulse 2s ease-in-out infinite;
+        }
+        @keyframes dedupPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 110, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(255, 0, 110, 0.2); }
+        }
+        .dedup-item h5 {
+            font-size: 13px; color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .dedup-item p {
+            font-size: 11px; color: var(--text-muted);
+            margin: 0;
+        }
+        .dedup-match {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(255, 0, 110, 0.15);
+            color: var(--magenta);
+            border-radius: 4px;
+            font-size: 10px;
+            font-family: var(--font-mono);
+            margin-top: 8px;
+        }
+
+        /* ===== INTERVIEW AGENT ===== */
+        .interview-stage {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .waveform-container {
+            height: 300px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        #waveform-canvas {
+            width: 100%; height: 100%;
+        }
+        .transcript-panel {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .transcript-panel h3 {
+            font-family: var(--font-display);
+            font-size: 13px; color: var(--cyan);
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .transcript-item {
+            margin-bottom: 16px;
+            padding-left: 16px;
+            border-left: 2px solid rgba(0, 240, 255, 0.2);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.5s ease;
+        }
+        .transcript-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .transcript-item.interviewer {
+            border-left-color: var(--cyan);
+        }
+        .transcript-item.candidate {
+            border-left-color: var(--magenta);
+        }
+        .transcript-speaker {
+            font-size: 11px; color: var(--text-muted);
+            margin-bottom: 4px;
+            font-family: var(--font-mono);
+        }
+        .transcript-text {
+            font-size: 13px; color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .transcript-text.typing::after {
+            content: '|';
+            animation: cursorBlink 1s infinite;
+            color: var(--cyan);
+        }
+        .interview-timeline {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            border-radius: 20px;
+        }
+        .timeline-node {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .timeline-node-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: var(--cyan);
+            margin: 0 auto 8px;
+            box-shadow: 0 0 10px var(--cyan);
+            position: relative;
+            z-index: 1;
+        }
+        .timeline-node-dot.active {
+            animation: timelinePulse 2s ease-in-out infinite;
+        }
+        @keyframes timelinePulse {
+            0%, 100% { box-shadow: 0 0 10px var(--cyan); }
+            50% { box-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan); }
+        }
+        .timeline-node-label {
+            font-size: 11px; color: var(--text-secondary);
+        }
+        .timeline-connector {
+            position: absolute;
+            top: 6px; left: 50%;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+        }
+        .timeline-node:last-child .timeline-connector {
+            display: none;
+        }
+        .ai-comment {
+            margin-top: 32px;
+            padding: 32px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-comment::before {
+            content: '';
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        }
+        .ai-comment h3 {
+            font-family: var(--font-display);
+            font-size: 13px; color: var(--cyan);
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .ai-comment-text {
+            font-size: 14px; color: var(--text-primary);
+            line-height: 1.8;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .ai-comment-text.visible {
+            opacity: 1;
+        }
+
+        /* ===== REPORT AGENT ===== */
+        .report-factory {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .data-sources {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .source-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .source-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .source-card:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            transform: translateX(8px);
+        }
+        .source-card h4 {
+            font-size: 12px; color: var(--text-muted);
+            margin-bottom: 8px;
+            font-family: var(--font-mono);
+        }
+        .source-value {
+            font-family: var(--font-mono);
+            font-size: 28px; color: var(--cyan);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+        .source-value span {
+            font-size: 14px; color: var(--text-muted);
+        }
+        .report-preview {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .report-preview::before {
+            content: '';
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--cyan), var(--magenta));
+        }
+        .report-preview h3 {
+            font-family: var(--font-display);
+            font-size: 14px; color: var(--cyan);
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+        .report-content {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        .report-content .line {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+            margin-bottom: 8px;
+        }
+        .report-content .line.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .report-chart {
+            margin-top: 24px;
+            height: 200px;
+        }
+        #report-chart-canvas {
+            width: 100%; height: 100%;
+        }
+        .export-btn {
+            margin-top: 24px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--cyan), #0891b2);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-display);
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+        }
+        .export-btn::before {
+            content: '';
+            position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        .export-btn:hover::before {
+            left: 100%;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             body { cursor: auto; }
@@ -1795,57 +2275,355 @@
         </div>
     </div>
 
-    <!-- Agent Detail: Screening (Placeholder) -->
+    <!-- Agent Detail: Screening -->
     <div class="agent-detail" id="agent-screening">
         <div class="agent-detail-header">
             <button class="agent-detail-back" onclick="closeAgentDetail()">← 返回</button>
             <div class="agent-detail-title">简历筛选 AGENT · 解析控制台</div>
             <div style="width:80px"></div>
         </div>
-        <div class="agent-detail-body" style="text-align:center;padding-top:120px">
-            <div style="font-size:64px;margin-bottom:24px">📄</div>
-            <h2 style="font-family:var(--font-display);font-size:24px;margin-bottom:16px">简历筛选 Agent</h2>
-            <p style="color:var(--text-secondary);max-width:480px;margin:0 auto">
-                自动解析PDF/DOC/图片简历，提取结构化信息，进行胜任力评分与去重检测。
-                <br><br>
-                <span style="color:var(--text-muted);font-size:13px">此页面正在开发中，即将上线...</span>
-            </p>
+        <div class="agent-detail-body">
+            <div class="agent-intro">
+                <div class="agent-intro-left" id="screening-intro-left">
+                    <div class="agent-intro-icon">📄</div>
+                    <h2>简历筛选 Agent</h2>
+                    <p id="screening-intro-text"></p>
+                </div>
+                <div class="agent-intro-right" id="screening-intro-right">
+                    <div class="capability-list">
+                        <div class="capability-item" data-cap-delay="0">
+                            <div class="capability-icon">📑</div>
+                            <div class="capability-text">
+                                <h4>多格式解析</h4>
+                                <p>支持PDF/DOC/图片/网页简历，OCR+结构化提取，准确率95%+</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="100">
+                            <div class="capability-icon">🧩</div>
+                            <div class="capability-text">
+                                <h4>信息结构化</h4>
+                                <p>自动提取姓名、岗位、经验、技能、学历等20+字段</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="200">
+                            <div class="capability-icon">⭐</div>
+                            <div class="capability-text">
+                                <h4>胜任力评分</h4>
+                                <p>基于JD匹配度+技能图谱+项目经验，生成多维度评分</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="300">
+                            <div class="capability-icon">🔍</div>
+                            <div class="capability-text">
+                                <h4>智能去重</h4>
+                                <p>跨平台简历去重检测，识别同一人多份投递，避免重复沟通</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="screening-workspace">
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-pulse"></div>
+                    <div class="scan-line" id="scan-line"></div>
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-text">
+                        <div>拖拽简历到此处</div>
+                        <div style="margin-top:8px;color:var(--text-muted);font-size:12px">或 <span>点击上传</span> PDF / DOC / 图片</div>
+                    </div>
+                </div>
+                <div class="parse-panel" id="parse-panel">
+                    <div class="parse-card" data-parse-delay="0">
+                        <h4>基本信息</h4>
+                        <p>任承智 · 27岁 · 暖通工程师</p>
+                        <div class="tag">南通</div>
+                        <div class="tag">5年经验</div>
+                    </div>
+                    <div class="parse-card" data-parse-delay="100">
+                        <h4>技能图谱</h4>
+                        <p>HVAC · 制冷系统 · 数据中心基础设施</p>
+                        <div class="tag">HVAC</div>
+                        <div class="tag">精密空调</div>
+                        <div class="tag">UPS</div>
+                    </div>
+                    <div class="parse-card" data-parse-delay="200">
+                        <h4>项目经验</h4>
+                        <p>参与3个大型数据中心暖通项目设计...</p>
+                        <div class="tag">数据中心</div>
+                        <div class="tag">暖通设计</div>
+                    </div>
+                    <div class="parse-card" data-parse-delay="300">
+                        <h4>教育背景</h4>
+                        <p>XX大学 · 建筑环境与设备工程 · 本科</p>
+                        <div class="tag">本科</div>
+                        <div class="tag">211院校</div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <h3 style="font-family:var(--font-display);font-size:13px;color:var(--cyan);letter-spacing:2px;margin-bottom:24px">胜任力评估</h3>
+                <div class="score-ring-container">
+                    <div class="score-ring">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+                            <circle class="score-ring-fill" cx="60" cy="60" r="50"
+                                stroke-dasharray="314" stroke-dashoffset="314" data-score="85"/>
+                        </svg>
+                        <div class="score-text">85</div>
+                        <div class="score-label">JD匹配度</div>
+                    </div>
+                    <div class="score-ring">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+                            <circle class="score-ring-fill" cx="60" cy="60" r="50"
+                                stroke-dasharray="314" stroke-dashoffset="314" data-score="78"/>
+                        </svg>
+                        <div class="score-text">78</div>
+                        <div class="score-label">技能深度</div>
+                    </div>
+                    <div class="score-ring">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+                            <circle class="score-ring-fill" cx="60" cy="60" r="50"
+                                stroke-dasharray="314" stroke-dashoffset="314" data-score="92"/>
+                        </svg>
+                        <div class="score-text">92</div>
+                        <div class="score-label">经验匹配</div>
+                    </div>
+                    <div class="score-ring">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+                            <circle class="score-ring-fill" cx="60" cy="60" r="50"
+                                stroke-dasharray="314" stroke-dashoffset="314" data-score="88"/>
+                        </svg>
+                        <div class="score-text">88</div>
+                        <div class="score-label">综合评分</div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-card" style="margin-top:24px">
+                <h3 style="font-family:var(--font-display);font-size:13px;color:var(--cyan);letter-spacing:2px;margin-bottom:24px">能力雷达图</h3>
+                <div class="radar-chart-container">
+                    <canvas id="radar-canvas"></canvas>
+                </div>
+            </div>
+            <div class="dedup-section">
+                <h3>🔍 去重检测</h3>
+                <div class="dedup-list">
+                    <div class="dedup-item">
+                        <h5>BOSS直聘 · 任承智</h5>
+                        <p>暖通工程师 · 南通 · 5年</p>
+                        <div class="dedup-match">匹配度 98%</div>
+                    </div>
+                    <div class="dedup-item matched">
+                        <h5>猎聘网 · 任承智</h5>
+                        <p>暖通工程师 · 南通 · 5年</p>
+                        <div class="dedup-match">疑似重复</div>
+                    </div>
+                    <div class="dedup-item">
+                        <h5>官网投递 · 叶智文</h5>
+                        <p>电气测试 · 乌兰察布 · 3年</p>
+                        <div class="dedup-match">新候选人</div>
+                    </div>
+                    <div class="dedup-item">
+                        <h5>内推 · 苏威力</h5>
+                        <p>暖通工程师 · 苏州 · 4年</p>
+                        <div class="dedup-match">新候选人</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Agent Detail: Interview (Placeholder) -->
+    <!-- Agent Detail: Interview -->
     <div class="agent-detail" id="agent-interview">
         <div class="agent-detail-header">
             <button class="agent-detail-back" onclick="closeAgentDetail()">← 返回</button>
             <div class="agent-detail-title">AI面试 AGENT · 声波实验室</div>
             <div style="width:80px"></div>
         </div>
-        <div class="agent-detail-body" style="text-align:center;padding-top:120px">
-            <div style="font-size:64px;margin-bottom:24px">🎙️</div>
-            <h2 style="font-family:var(--font-display);font-size:24px;margin-bottom:16px">AI面试 Agent</h2>
-            <p style="color:var(--text-secondary);max-width:480px;margin:0 auto">
-                语音转文字、说话人分离、关键问答提取、AI辅助生成面试评语与考察建议。
-                <br><br>
-                <span style="color:var(--text-muted);font-size:13px">此页面正在开发中，即将上线...</span>
-            </p>
+        <div class="agent-detail-body">
+            <div class="agent-intro">
+                <div class="agent-intro-left" id="interview-intro-left">
+                    <div class="agent-intro-icon">🎙️</div>
+                    <h2>AI面试 Agent</h2>
+                    <p id="interview-intro-text"></p>
+                </div>
+                <div class="agent-intro-right" id="interview-intro-right">
+                    <div class="capability-list">
+                        <div class="capability-item" data-cap-delay="0">
+                            <div class="capability-icon">🎤</div>
+                            <div class="capability-text">
+                                <h4>语音转文字</h4>
+                                <p>实时将面试对话转为文字，支持多方言识别，准确率96%+</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="100">
+                            <div class="capability-icon">👥</div>
+                            <div class="capability-text">
+                                <h4>说话人分离</h4>
+                                <p>自动区分面试官与候选人，生成双轨对话记录</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="200">
+                            <div class="capability-icon">💡</div>
+                            <div class="capability-text">
+                                <h4>关键问答提取</h4>
+                                <p>AI识别核心技术问答、考察要点、候选人回答质量</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="300">
+                            <div class="capability-icon">📝</div>
+                            <div class="capability-text">
+                                <h4>智能评语生成</h4>
+                                <p>基于对话内容生成结构化面试评语与考察建议</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="interview-stage">
+                <div class="waveform-container">
+                    <canvas id="waveform-canvas"></canvas>
+                </div>
+                <div class="transcript-panel" id="transcript-panel">
+                    <h3>实时转录</h3>
+                    <div class="transcript-item interviewer" data-transcript-delay="0">
+                        <div class="transcript-speaker">面试官</div>
+                        <div class="transcript-text">请先简单介绍一下你的项目经验。</div>
+                    </div>
+                    <div class="transcript-item candidate" data-transcript-delay="500">
+                        <div class="transcript-speaker">候选人</div>
+                        <div class="transcript-text">好的，我在数据中心暖通领域有5年经验...</div>
+                    </div>
+                    <div class="transcript-item interviewer" data-transcript-delay="1000">
+                        <div class="transcript-speaker">面试官</div>
+                        <div class="transcript-text">能详细说说你负责的精密空调项目吗？</div>
+                    </div>
+                    <div class="transcript-item candidate" data-transcript-delay="1500">
+                        <div class="transcript-speaker">候选人</div>
+                        <div class="transcript-text">当然，在XX数据中心项目中，我负责...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="interview-timeline">
+                <div class="timeline-node">
+                    <div class="timeline-node-dot active"></div>
+                    <div class="timeline-node-label">自我介绍</div>
+                    <div class="timeline-connector"></div>
+                </div>
+                <div class="timeline-node">
+                    <div class="timeline-node-dot"></div>
+                    <div class="timeline-node-label">技术问答</div>
+                    <div class="timeline-connector"></div>
+                </div>
+                <div class="timeline-node">
+                    <div class="timeline-node-dot"></div>
+                    <div class="timeline-node-label">HR提问</div>
+                    <div class="timeline-connector"></div>
+                </div>
+                <div class="timeline-node">
+                    <div class="timeline-node-dot"></div>
+                    <div class="timeline-node-label">反问环节</div>
+                </div>
+            </div>
+            <div class="ai-comment" id="ai-comment">
+                <h3>🤖 AI 面试评语</h3>
+                <div class="ai-comment-text" id="ai-comment-text">
+                    候选人技术基础扎实，对数据中心暖通系统有深入理解。在精密空调选型、气流组织优化方面经验丰富。建议重点关注其在大型项目中的主导能力，以及跨部门协作经验。
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Agent Detail: Report (Placeholder) -->
+    <!-- Agent Detail: Report -->
     <div class="agent-detail" id="agent-report">
         <div class="agent-detail-header">
             <button class="agent-detail-back" onclick="closeAgentDetail()">← 返回</button>
             <div class="agent-detail-title">周报生成 AGENT · 报告铸造厂</div>
             <div style="width:80px"></div>
         </div>
-        <div class="agent-detail-body" style="text-align:center;padding-top:120px">
-            <div style="font-size:64px;margin-bottom:24px">📊</div>
-            <h2 style="font-family:var(--font-display);font-size:24px;margin-bottom:16px">周报生成 Agent</h2>
-            <p style="color:var(--text-secondary);max-width:480px;margin:0 auto">
-                自动汇总招聘漏斗数据、转化率分析、趋势预测，一键生成招聘周报与月报。
-                <br><br>
-                <span style="color:var(--text-muted);font-size:13px">此页面正在开发中，即将上线...</span>
-            </p>
+        <div class="agent-detail-body">
+            <div class="agent-intro">
+                <div class="agent-intro-left" id="report-intro-left">
+                    <div class="agent-intro-icon">📊</div>
+                    <h2>周报生成 Agent</h2>
+                    <p id="report-intro-text"></p>
+                </div>
+                <div class="agent-intro-right" id="report-intro-right">
+                    <div class="capability-list">
+                        <div class="capability-item" data-cap-delay="0">
+                            <div class="capability-icon">📈</div>
+                            <div class="capability-text">
+                                <h4>数据自动汇总</h4>
+                                <p>自动抓取飞书表格、邮件系统、面试记录等多源数据</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="100">
+                            <div class="capability-icon">🔄</div>
+                            <div class="capability-text">
+                                <h4>转化率分析</h4>
+                                <p>全渠道招聘漏斗分析，识别瓶颈环节，给出优化建议</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="200">
+                            <div class="capability-icon">🔮</div>
+                            <div class="capability-text">
+                                <h4>趋势预测</h4>
+                                <p>基于历史数据预测下周招聘进展，提前预警风险</p>
+                            </div>
+                        </div>
+                        <div class="capability-item" data-cap-delay="300">
+                            <div class="capability-icon">📄</div>
+                            <div class="capability-text">
+                                <h4>一键生成</h4>
+                                <p>5秒生成专业周报/月报，支持导出PDF/Word/飞书文档</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="report-factory">
+                <div class="data-sources">
+                    <div class="source-card" data-source-delay="0">
+                        <h4>本周新增简历</h4>
+                        <div class="source-value">47<span>份</span></div>
+                    </div>
+                    <div class="source-card" data-source-delay="100">
+                        <h4>面试通过率</h4>
+                        <div class="source-value">62<span>%</span></div>
+                    </div>
+                    <div class="source-card" data-source-delay="200">
+                        <h4>平均招聘周期</h4>
+                        <div class="source-value">18<span>天</span></div>
+                    </div>
+                    <div class="source-card" data-source-delay="300">
+                        <h4>待处理简历</h4>
+                        <div class="source-value">12<span>份</span></div>
+                    </div>
+                </div>
+                <div class="report-preview">
+                    <h3>📋 招聘周报 Preview</h3>
+                    <div class="report-content" id="report-content">
+                        <div class="line">【招聘周报】2024年第25周</div>
+                        <div class="line">一、本周进展</div>
+                        <div class="line">   · 新增简历47份，较上周增长12%</div>
+                        <div class="line">   · 完成初筛32份，初筛通过率68%</div>
+                        <div class="line">   · 安排面试15场，到场率93%</div>
+                        <div class="line">   · 发放Offer 3份，待确认2份</div>
+                        <div class="line">二、渠道分析</div>
+                        <div class="line">   · BOSS直聘：转化率最高（35%）</div>
+                        <div class="line">   · 猎聘网：高端岗位效果佳</div>
+                        <div class="line">三、下周计划</div>
+                        <div class="line">   · 重点推进暖通工程师岗位招聘</div>
+                        <div class="line">   · 加大苏州地区招聘投入</div>
+                    </div>
+                    <div class="report-chart">
+                        <canvas id="report-chart-canvas"></canvas>
+                    </div>
+                    <button class="export-btn">📥 导出周报</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2249,6 +3027,9 @@
         // ===== AGENT CANVAS EFFECTS =====
         function initAgentCanvas(agentId) {
             if (agentId === 'analysis') initAnalysisCanvas();
+            if (agentId === 'screening') initScreeningCanvas();
+            if (agentId === 'interview') initInterviewCanvas();
+            if (agentId === 'report') initReportCanvas();
         }
 
         // Analysis Agent: Funnel + Map
@@ -2661,6 +3442,345 @@
             if (ticker) {
                 ticker.innerHTML += ticker.innerHTML;
             }
+        }
+
+        // ===== SCREENING AGENT =====
+        let scanAnimId, radarAnimId;
+        function initScreeningCanvas() {
+            // Scan line animation
+            const uploadZone = document.getElementById('upload-zone');
+            const scanLine = document.getElementById('scan-line');
+            if (uploadZone && scanLine) {
+                setTimeout(() => {
+                    uploadZone.classList.add('scanning');
+                    scanLine.classList.add('active');
+                    setTimeout(() => {
+                        uploadZone.classList.remove('scanning');
+                        scanLine.classList.remove('active');
+                    }, 4000);
+                }, 1000);
+            }
+
+            // Parse cards staggered entrance
+            document.querySelectorAll('.parse-card').forEach((card, i) => {
+                const delay = parseInt(card.dataset.parseDelay) || 0;
+                setTimeout(() => {
+                    card.classList.add('visible');
+                }, 1500 + delay);
+            });
+
+            // Score rings animation
+            document.querySelectorAll('#agent-screening .score-ring-fill').forEach(ring => {
+                const score = parseInt(ring.dataset.score);
+                const circumference = 2 * Math.PI * 50;
+                const offset = circumference - (score / 100) * circumference;
+                setTimeout(() => {
+                    ring.style.strokeDashoffset = offset;
+                }, 2000);
+            });
+
+            // Radar chart
+            const rCanvas = document.getElementById('radar-canvas');
+            if (rCanvas) {
+                const rCtx = rCanvas.getContext('2d');
+                let rw = rCanvas.width = rCanvas.offsetWidth;
+                let rh = rCanvas.height = 250;
+                const radarData = [0.85, 0.78, 0.92, 0.88, 0.75, 0.82];
+                const radarLabels = ['JD匹配', '技能深度', '经验匹配', '学历', '沟通能力', '项目经验'];
+                let radarProgress = 0;
+
+                function drawRadar() {
+                    rCtx.clearRect(0, 0, rw, rh);
+                    radarProgress = Math.min(radarProgress + 0.02, 1);
+                    const cx = rw / 2;
+                    const cy = rh / 2;
+                    const radius = Math.min(rw, rh) * 0.35;
+                    const angleStep = (Math.PI * 2) / radarData.length;
+
+                    // Draw grid
+                    for (let i = 1; i <= 4; i++) {
+                        rCtx.beginPath();
+                        for (let j = 0; j <= radarData.length; j++) {
+                            const angle = j * angleStep - Math.PI / 2;
+                            const r = radius * (i / 4);
+                            const x = cx + Math.cos(angle) * r;
+                            const y = cy + Math.sin(angle) * r;
+                            if (j === 0) rCtx.moveTo(x, y);
+                            else rCtx.lineTo(x, y);
+                        }
+                        rCtx.strokeStyle = 'rgba(0, 240, 255, 0.1)';
+                        rCtx.stroke();
+                    }
+
+                    // Draw axes
+                    for (let i = 0; i < radarData.length; i++) {
+                        const angle = i * angleStep - Math.PI / 2;
+                        rCtx.beginPath();
+                        rCtx.moveTo(cx, cy);
+                        rCtx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+                        rCtx.strokeStyle = 'rgba(0, 240, 255, 0.15)';
+                        rCtx.stroke();
+
+                        // Labels
+                        const labelX = cx + Math.cos(angle) * (radius + 20);
+                        const labelY = cy + Math.sin(angle) * (radius + 20);
+                        rCtx.fillStyle = '#94a3b8';
+                        rCtx.font = '11px "Noto Sans SC"';
+                        rCtx.textAlign = 'center';
+                        rCtx.textBaseline = 'middle';
+                        rCtx.fillText(radarLabels[i], labelX, labelY);
+                    }
+
+                    // Draw data area
+                    rCtx.beginPath();
+                    for (let i = 0; i <= radarData.length; i++) {
+                        const idx = i % radarData.length;
+                        const angle = idx * angleStep - Math.PI / 2;
+                        const val = radarData[idx] * radarProgress;
+                        const x = cx + Math.cos(angle) * radius * val;
+                        const y = cy + Math.sin(angle) * radius * val;
+                        if (i === 0) rCtx.moveTo(x, y);
+                        else rCtx.lineTo(x, y);
+                    }
+                    rCtx.fillStyle = 'rgba(0, 240, 255, 0.15)';
+                    rCtx.fill();
+                    rCtx.strokeStyle = '#00f0ff';
+                    rCtx.lineWidth = 2;
+                    rCtx.stroke();
+
+                    // Draw points
+                    for (let i = 0; i < radarData.length; i++) {
+                        const angle = i * angleStep - Math.PI / 2;
+                        const val = radarData[i] * radarProgress;
+                        const x = cx + Math.cos(angle) * radius * val;
+                        const y = cy + Math.sin(angle) * radius * val;
+                        rCtx.beginPath();
+                        rCtx.arc(x, y, 4, 0, Math.PI * 2);
+                        rCtx.fillStyle = '#00f0ff';
+                        rCtx.fill();
+                    }
+
+                    if (radarProgress < 1) radarAnimId = requestAnimationFrame(drawRadar);
+                }
+                setTimeout(drawRadar, 2500);
+            }
+
+            // Agent intro typing
+            const introText = document.getElementById('screening-intro-text');
+            const introLeft = document.getElementById('screening-intro-left');
+            const introRight = document.getElementById('screening-intro-right');
+            if (introLeft) setTimeout(() => introLeft.classList.add('visible'), 400);
+            if (introRight) setTimeout(() => introRight.classList.add('visible'), 600);
+            if (introText) {
+                const content = '简历筛选 Agent 是招聘流程的"第一道闸门"，基于多模态AI技术，支持PDF/DOC/图片等多种格式简历的自动解析。通过OCR文字识别、自然语言处理与技能图谱匹配，能够在5秒内完成一份简历的结构化提取，并基于胜任力模型进行多维度评分，同时智能检测重复投递，大幅提升初筛效率。';
+                let charIdx = 0;
+                function typeScreening() {
+                    if (charIdx < content.length) {
+                        introText.textContent += content.charAt(charIdx);
+                        charIdx++;
+                        setTimeout(typeScreening, 25);
+                    }
+                }
+                setTimeout(typeScreening, 800);
+            }
+
+            // Capability items
+            document.querySelectorAll('#agent-screening .capability-item').forEach((item, i) => {
+                const delay = parseInt(item.dataset.capDelay) || 0;
+                setTimeout(() => item.classList.add('visible'), 800 + delay);
+            });
+        }
+
+        // ===== INTERVIEW AGENT =====
+        let waveAnimId;
+        function initInterviewCanvas() {
+            // Waveform animation
+            const wCanvas = document.getElementById('waveform-canvas');
+            if (wCanvas) {
+                const wCtx = wCanvas.getContext('2d');
+                let ww = wCanvas.width = wCanvas.offsetWidth;
+                let wh = wCanvas.height = 300;
+                let waveTime = 0;
+
+                function drawWaveform() {
+                    wCtx.clearRect(0, 0, ww, wh);
+                    waveTime += 0.05;
+                    const centerY = wh / 2;
+                    const barCount = 60;
+                    const barWidth = ww / barCount;
+
+                    for (let i = 0; i < barCount; i++) {
+                        const x = i * barWidth;
+                        const normalizedI = i / barCount;
+
+                        // Interviewer wave (top half, cyan)
+                        const interviewerAmp = Math.sin(waveTime * 2 + i * 0.3) * 0.5 + 0.5;
+                        const interviewerHeight = interviewerAmp * 60 * (1 + Math.sin(waveTime) * 0.3);
+                        wCtx.fillStyle = `rgba(0, 240, 255, ${0.3 + interviewerAmp * 0.4})`;
+                        wCtx.fillRect(x + 1, centerY - interviewerHeight, barWidth - 2, interviewerHeight);
+
+                        // Candidate wave (bottom half, magenta)
+                        const candidateAmp = Math.sin(waveTime * 1.5 + i * 0.4 + Math.PI) * 0.5 + 0.5;
+                        const candidateHeight = candidateAmp * 50 * (1 + Math.cos(waveTime * 0.8) * 0.2);
+                        wCtx.fillStyle = `rgba(255, 0, 110, ${0.3 + candidateAmp * 0.4})`;
+                        wCtx.fillRect(x + 1, centerY, barWidth - 2, candidateHeight);
+                    }
+
+                    // Center line
+                    wCtx.strokeStyle = 'rgba(0, 240, 255, 0.1)';
+                    wCtx.lineWidth = 1;
+                    wCtx.beginPath();
+                    wCtx.moveTo(0, centerY);
+                    wCtx.lineTo(ww, centerY);
+                    wCtx.stroke();
+
+                    waveAnimId = requestAnimationFrame(drawWaveform);
+                }
+                drawWaveform();
+            }
+
+            // Transcript items staggered entrance
+            document.querySelectorAll('.transcript-item').forEach((item, i) => {
+                const delay = parseInt(item.dataset.transcriptDelay) || 0;
+                setTimeout(() => {
+                    item.classList.add('visible');
+                }, 1000 + delay);
+            });
+
+            // AI comment reveal
+            const aiComment = document.getElementById('ai-comment-text');
+            if (aiComment) {
+                setTimeout(() => {
+                    aiComment.classList.add('visible');
+                }, 3000);
+            }
+
+            // Agent intro typing
+            const introText = document.getElementById('interview-intro-text');
+            const introLeft = document.getElementById('interview-intro-left');
+            const introRight = document.getElementById('interview-intro-right');
+            if (introLeft) setTimeout(() => introLeft.classList.add('visible'), 400);
+            if (introRight) setTimeout(() => introRight.classList.add('visible'), 600);
+            if (introText) {
+                const content = 'AI面试 Agent 是招聘流程的"智能旁听官"，基于语音识别与自然语言处理技术，能够实时将面试对话转为文字，自动区分面试官与候选人身份，提取关键技术问答与考察要点。面试结束后，AI基于对话内容生成结构化评语与考察建议，帮助HR与用人部门做出更客观的招聘决策。';
+                let charIdx = 0;
+                function typeInterview() {
+                    if (charIdx < content.length) {
+                        introText.textContent += content.charAt(charIdx);
+                        charIdx++;
+                        setTimeout(typeInterview, 25);
+                    }
+                }
+                setTimeout(typeInterview, 800);
+            }
+
+            // Capability items
+            document.querySelectorAll('#agent-interview .capability-item').forEach((item, i) => {
+                const delay = parseInt(item.dataset.capDelay) || 0;
+                setTimeout(() => item.classList.add('visible'), 800 + delay);
+            });
+        }
+
+        // ===== REPORT AGENT =====
+        let reportChartAnimId;
+        function initReportCanvas() {
+            // Source cards staggered entrance
+            document.querySelectorAll('.source-card').forEach((card, i) => {
+                const delay = parseInt(card.dataset.sourceDelay) || 0;
+                setTimeout(() => {
+                    card.classList.add('visible');
+                }, 800 + delay);
+            });
+
+            // Report lines staggered entrance
+            document.querySelectorAll('#report-content .line').forEach((line, i) => {
+                setTimeout(() => {
+                    line.classList.add('visible');
+                }, 1200 + i * 200);
+            });
+
+            // Report chart (bar chart growth animation)
+            const rcCanvas = document.getElementById('report-chart-canvas');
+            if (rcCanvas) {
+                const rcCtx = rcCanvas.getContext('2d');
+                let rcw = rcCanvas.width = rcCanvas.offsetWidth;
+                let rch = rcCanvas.height = 200;
+                const barData = [
+                    { label: '暖通', value: 8, color: '#00f0ff' },
+                    { label: '电气', value: 12, color: '#00c8ff' },
+                    { label: '弱电', value: 6, color: '#0099ff' },
+                    { label: '值班长', value: 15, color: '#0066ff' },
+                    { label: '工程师', value: 10, color: '#ff006e' }
+                ];
+                let barProgress = 0;
+
+                function drawReportChart() {
+                    rcCtx.clearRect(0, 0, rcw, rch);
+                    barProgress = Math.min(barProgress + 0.02, 1);
+
+                    const padding = 30;
+                    const chartW = rcw - padding * 2;
+                    const chartH = rch - padding * 2;
+                    const barWidth = chartW / barData.length * 0.6;
+                    const barGap = chartW / barData.length * 0.4;
+                    const maxVal = 20;
+
+                    barData.forEach((bar, i) => {
+                        const x = padding + i * (barWidth + barGap) + barGap / 2;
+                        const barHeight = (bar.value / maxVal) * chartH * barProgress;
+                        const y = padding + chartH - barHeight;
+
+                        // Bar
+                        rcCtx.fillStyle = bar.color + '80';
+                        rcCtx.fillRect(x, y, barWidth, barHeight);
+
+                        // Bar top glow
+                        rcCtx.fillStyle = bar.color;
+                        rcCtx.fillRect(x, y, barWidth, 3);
+
+                        // Label
+                        rcCtx.fillStyle = '#94a3b8';
+                        rcCtx.font = '11px "Noto Sans SC"';
+                        rcCtx.textAlign = 'center';
+                        rcCtx.fillText(bar.label, x + barWidth / 2, padding + chartH + 15);
+
+                        // Value
+                        if (barProgress > 0.8) {
+                            rcCtx.fillStyle = bar.color;
+                            rcCtx.font = '12px "JetBrains Mono"';
+                            rcCtx.fillText(bar.value, x + barWidth / 2, y - 8);
+                        }
+                    });
+
+                    if (barProgress < 1) reportChartAnimId = requestAnimationFrame(drawReportChart);
+                }
+                setTimeout(drawReportChart, 1500);
+            }
+
+            // Agent intro typing
+            const introText = document.getElementById('report-intro-text');
+            const introLeft = document.getElementById('report-intro-left');
+            const introRight = document.getElementById('report-intro-right');
+            if (introLeft) setTimeout(() => introLeft.classList.add('visible'), 400);
+            if (introRight) setTimeout(() => introRight.classList.add('visible'), 600);
+            if (introText) {
+                const content = '周报生成 Agent 是招聘团队的"智能秘书"，自动汇总多渠道招聘数据，分析转化率与趋势，一键生成专业周报与月报。支持飞书文档、PDF、Word等多种导出格式，让数据汇报变得轻松高效，帮助管理者快速掌握招聘全局。';
+                let charIdx = 0;
+                function typeReport() {
+                    if (charIdx < content.length) {
+                        introText.textContent += content.charAt(charIdx);
+                        charIdx++;
+                        setTimeout(typeReport, 25);
+                    }
+                }
+                setTimeout(typeReport, 800);
+            }
+
+            // Capability items
+            document.querySelectorAll('#agent-report .capability-item').forEach((item, i) => {
+                const delay = parseInt(item.dataset.capDelay) || 0;
+                setTimeout(() => item.classList.add('visible'), 800 + delay);
+            });
         }
     </script>
 </body>
