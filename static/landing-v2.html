@@ -74,23 +74,30 @@
             border: 2px solid var(--cyan); border-radius: 50%;
             pointer-events: none; z-index: 9999;
             transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
-            mix-blend-mode: difference;
+            background: rgba(0, 240, 255, 0.08);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.4), inset 0 0 8px rgba(0, 240, 255, 0.15);
+            left: -100px; top: -100px;
         }
         .cursor.hover {
             width: 50px; height: 50px;
             border-color: var(--amber);
-            background: rgba(255, 170, 0, 0.1);
+            background: rgba(255, 170, 0, 0.15);
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.5), inset 0 0 12px rgba(255, 170, 0, 0.2);
         }
         .cursor-dot {
             position: fixed; width: 6px; height: 6px;
             background: var(--cyan); border-radius: 50%;
             pointer-events: none; z-index: 9999;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+            left: -100px; top: -100px;
         }
         .cursor-trail {
             position: fixed; width: 8px; height: 8px;
-            background: rgba(0, 240, 255, 0.3); border-radius: 50%;
+            background: rgba(0, 240, 255, 0.4); border-radius: 50%;
             pointer-events: none; z-index: 9998;
             transition: opacity 0.5s ease;
+            box-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+            left: -100px; top: -100px;
         }
 
         /* ===== BACKGROUND CANVAS ===== */
