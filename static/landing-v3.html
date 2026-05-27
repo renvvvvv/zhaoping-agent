@@ -984,11 +984,15 @@
         /* ===== FLIP TRANSITION ===== */
         .flip-card {
             position: fixed; z-index: 300;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
+            will-change: transform, opacity, background, border-radius;
         }
         .flip-card.animating {
             pointer-events: none;
+        }
+        .flip-card.closing {
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* ===== ANALYSIS AGENT DASHBOARD ===== */
@@ -3188,20 +3192,21 @@
             activeAgent = agentId;
             const rect = card.getBoundingClientRect();
 
-            // Create flip element
+            // Create flip element with card's exact appearance
             flipEl = document.createElement('div');
             flipEl.className = 'flip-card';
             flipEl.style.left = rect.left + 'px';
             flipEl.style.top = rect.top + 'px';
             flipEl.style.width = rect.width + 'px';
             flipEl.style.height = rect.height + 'px';
-            flipEl.style.background = 'rgba(15, 23, 42, 0.8)';
+            flipEl.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72))';
             flipEl.style.borderRadius = '24px';
-            flipEl.style.border = '1px solid rgba(37, 99, 235, 0.25)';
-            flipEl.style.boxShadow = '0 0 40px rgba(37, 99, 235, 0.15)';
+            flipEl.style.border = '1px solid rgba(37, 99, 235, 0.15)';
+            flipEl.style.boxShadow = '0 4px 24px rgba(37, 99, 235, 0.08), 0 0 0 1px rgba(37, 99, 235, 0.05)';
+            flipEl.style.backdropFilter = 'blur(24px) saturate(1.4)';
             document.body.appendChild(flipEl);
 
-            // Animate to fullscreen
+            // Animate to fullscreen with spring physics
             requestAnimationFrame(() => {
                 flipEl.classList.add('animating');
                 flipEl.style.left = '0px';
@@ -3210,25 +3215,71 @@
                 flipEl.style.height = '100vh';
                 flipEl.style.borderRadius = '0px';
                 flipEl.style.background = '#FAFBFC';
+                flipEl.style.borderColor = 'transparent';
+                flipEl.style.boxShadow = '0 0 80px rgba(37, 99, 235, 0.12), inset 0 0 60px rgba(37, 99, 235, 0.03)';
+                flipEl.style.backdropFilter = 'none';
             });
 
             // Show detail after transition
             setTimeout(() => {
-                flipEl.remove();
-                flipEl = null;
-                detail.classList.add('active');
-                document.body.style.overflow = 'hidden';
-                initAgentCanvas(agentId);
-            }, 600);
+                flipEl.style.opacity = '0';
+                flipEl.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => {
+                    flipEl.remove();
+                    flipEl = null;
+                    detail.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    initAgentCanvas(agentId);
+                }, 300);
+            }, 800);
         }
 
         function closeAgentDetail() {
             const detail = document.getElementById('agent-' + activeAgent);
             if (!detail) return;
 
+            // Find original card position
+            const card = document.querySelector(`[data-agent="${activeAgent}"]`);
+            const rect = card ? card.getBoundingClientRect() : { left: window.innerWidth/2 - 150, top: window.innerHeight/2 - 100, width: 300, height: 200 };
+
+            // Create closing flip element from current fullscreen state
+            flipEl = document.createElement('div');
+            flipEl.className = 'flip-card closing';
+            flipEl.style.left = '0px';
+            flipEl.style.top = '0px';
+            flipEl.style.width = '100vw';
+            flipEl.style.height = '100vh';
+            flipEl.style.background = '#FAFBFC';
+            flipEl.style.borderRadius = '0px';
+            flipEl.style.opacity = '1';
+            document.body.appendChild(flipEl);
+
             detail.classList.remove('active');
             document.body.style.overflow = '';
-            activeAgent = null;
+
+            // Animate back to card position
+            requestAnimationFrame(() => {
+                flipEl.style.left = rect.left + 'px';
+                flipEl.style.top = rect.top + 'px';
+                flipEl.style.width = rect.width + 'px';
+                flipEl.style.height = rect.height + 'px';
+                flipEl.style.borderRadius = '24px';
+                flipEl.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72))';
+                flipEl.style.border = '1px solid rgba(37, 99, 235, 0.15)';
+                flipEl.style.boxShadow = '0 4px 24px rgba(37, 99, 235, 0.08)';
+                flipEl.style.opacity = '0.85';
+            });
+
+            // Remove after transition
+            setTimeout(() => {
+                flipEl.style.opacity = '0';
+                flipEl.style.transition = 'opacity 0.25s ease';
+                setTimeout(() => {
+                    flipEl.remove();
+                    flipEl = null;
+                    activeAgent = null;
+                }, 250);
+            }, 700);
         }
 
         document.addEventListener('keydown', (e) => {
