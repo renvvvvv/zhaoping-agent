@@ -137,10 +137,9 @@
         }
         .nav-logo {
             width: 44px; height: 44px;
-            background: linear-gradient(135deg, var(--cyan), var(--magenta));
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px;
+            display: block;
+            object-fit: contain;
             box-shadow: 0 0 20px rgba(37, 99, 235, 0.25);
             animation: logoPulse 3s ease-in-out infinite;
         }
@@ -1907,7 +1906,7 @@
     <!-- Navigation -->
     <nav class="nav" id="navbar">
         <a href="/" class="nav-brand">
-            <div class="nav-logo">🧠</div>
+            <img class="nav-logo" src="logo.png" alt="维猎·甄才">
             <div class="nav-title">
                 维猎·<span>甄才</span>
                 <span class="nav-team">VNet数据中心 · 运维团队出品</span>
