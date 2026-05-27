@@ -3221,21 +3221,21 @@
 
             // Show detail after transition (overlap to prevent homepage flash)
             setTimeout(() => {
-                // First, show detail underneath with opacity 0
                 detail.classList.add('active');
-                detail.style.opacity = '0';
-                detail.style.transition = 'opacity 0.3s ease';
                 document.body.style.overflow = 'hidden';
 
-                // Then fade out flip element
-                flipEl.style.transition = 'opacity 0.3s ease';
-                flipEl.style.opacity = '0';
+                // Start both transitions simultaneously in next frame
+                requestAnimationFrame(() => {
+                    detail.style.transition = 'opacity 0.3s ease';
+                    detail.style.opacity = '1';
+
+                    flipEl.style.transition = 'opacity 0.3s ease';
+                    flipEl.style.opacity = '0';
+                });
 
                 setTimeout(() => {
                     flipEl.remove();
                     flipEl = null;
-                    // Fade in detail
-                    detail.style.opacity = '1';
                     initAgentCanvas(agentId);
                 }, 300);
             }, 800);
